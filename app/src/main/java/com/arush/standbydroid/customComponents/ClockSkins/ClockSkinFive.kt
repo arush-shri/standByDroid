@@ -45,7 +45,7 @@ fun ClockSkinFive(currentTime: String){
 @Composable
 fun PreviewFive() {
     StandByDroidTheme {
-        ClockSkinZero(currentTime = "9:11:00")
+        ClockSkinFive(currentTime = "9:11:00")
     }
 }
 

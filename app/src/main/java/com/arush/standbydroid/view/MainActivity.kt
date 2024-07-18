@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -17,6 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFour
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinOne
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinThree
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinTwo
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinZero
 import com.arush.standbydroid.ui.theme.StandByDroidTheme
 import kotlinx.coroutines.delay
@@ -64,8 +69,9 @@ fun HomeScreen(){
 
 @Composable
 fun PortraitLayout(currentTime: String) {
+    val intervalMinutes = remember { mutableIntStateOf(1) }
     Column(Modifier.fillMaxSize()) {
-        ClockSkinZero(currentTime)
+        ClockSkinFour(currentTime, intervalMinutes)
     }
 }
 
