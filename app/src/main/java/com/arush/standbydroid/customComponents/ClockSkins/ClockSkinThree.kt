@@ -48,20 +48,38 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement =  Arrangement.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
-            Text(
-                text = currentTime.substring(0,2),
-                style = TextStyle(
-                    fontFamily = FontFamily(
-                        androidx.compose.ui.text.font.Font(
-                            R.font.formula1_bold,
+            if(currentTime.substring(9) == "PM"){
+                Text(
+                    text = ((currentTime.substring(0,2)).toInt() + 12).toString(),
+                    style = TextStyle(
+                        fontFamily = FontFamily(
+                            androidx.compose.ui.text.font.Font(
+                                R.font.formula1_bold,
+                            ),
                         ),
+                        fontWeight = FontWeight.W900,
+                        fontSize = 70.sp,
+                        color = currentColor,
                     ),
-                    fontWeight = FontWeight.W900,
-                    fontSize = 70.sp,
-                    color = currentColor,
-                ),
-                modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
-            )
+                    modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
+                )
+            }
+            else{
+                Text(
+                    text = currentTime.substring(0,2),
+                    style = TextStyle(
+                        fontFamily = FontFamily(
+                            androidx.compose.ui.text.font.Font(
+                                R.font.formula1_bold,
+                            ),
+                        ),
+                        fontWeight = FontWeight.W900,
+                        fontSize = 70.sp,
+                        color = currentColor,
+                    ),
+                    modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
+                )
+            }
 //            Text(
 //                text = currentTime.substring(1,2),
 //                style = TextStyle(

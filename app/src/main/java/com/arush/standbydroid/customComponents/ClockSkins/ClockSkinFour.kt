@@ -48,20 +48,38 @@ fun ClockSkinFour(currentTime: String, intervalMinutes: MutableState<Int>){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement =  Arrangement.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
-            Text(
-                text = currentTime.substring(0,2),
-                style = TextStyle(
-                    fontFamily = FontFamily(
-                        androidx.compose.ui.text.font.Font(
-                            R.font.days28_later,
+            if(currentTime.substring(9) == "PM"){
+                Text(
+                    text = ((currentTime.substring(0,2)).toInt() + 12).toString(),
+                    style = TextStyle(
+                        fontFamily = FontFamily(
+                            androidx.compose.ui.text.font.Font(
+                                R.font.days28_later,
+                            ),
                         ),
+                        fontWeight = FontWeight.W900,
+                        fontSize = 100.sp,
+                        color = currentColor,
                     ),
-                    fontWeight = FontWeight.W900,
-                    fontSize = 100.sp,
-                    color = currentColor,
-                ),
-                modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
-            )
+                    modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
+                )
+            }
+            else{
+                Text(
+                    text = currentTime.substring(0,2),
+                    style = TextStyle(
+                        fontFamily = FontFamily(
+                            androidx.compose.ui.text.font.Font(
+                                R.font.days28_later,
+                            ),
+                        ),
+                        fontWeight = FontWeight.W900,
+                        fontSize = 100.sp,
+                        color = currentColor,
+                    ),
+                    modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
+                )
+            }
             Text(
                 text = ":",
                 style = TextStyle(

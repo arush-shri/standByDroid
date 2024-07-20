@@ -57,7 +57,7 @@ fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 150.sp,
+                    fontSize = 120.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
@@ -71,7 +71,7 @@ fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 85.sp,
+                    fontSize = 75.sp,
                     color = currentColor,
                 ),
             )
@@ -84,12 +84,25 @@ fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 150.sp,
+                    fontSize = 120.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (15).dp, y = (0).dp)
             )
-
+            Text(
+                text = currentTime.substring(8),
+                style = TextStyle(
+                    fontFamily = FontFamily(
+                        androidx.compose.ui.text.font.Font(
+                            R.font.glitch_goblin,
+                        ),
+                    ),
+                    fontWeight = FontWeight.W900,
+                    fontSize = 50.sp,
+                    color = currentColor,
+                ),
+                modifier = Modifier.offset(x = (18).dp, y = (25).dp)
+            )
         }
     }
 }

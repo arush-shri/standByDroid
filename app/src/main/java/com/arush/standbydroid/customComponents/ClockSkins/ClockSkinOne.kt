@@ -57,10 +57,10 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 120.sp,
+                    fontSize = 90.sp,
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (-10).dp, y = (-40).dp)
+                modifier = Modifier.offset(x = (0).dp, y = (-40).dp)
             )
             Text(
                 text = ":",
@@ -71,7 +71,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 100.sp,
+                    fontSize = 80.sp,
                     color = currentColor,
                 ),
             )
@@ -84,10 +84,24 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 120.sp,
+                    fontSize = 90.sp,
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (8).dp, y = (50).dp)
+                modifier = Modifier.offset(x = (5).dp, y = (50).dp)
+            )
+            Text(
+                text = currentTime.substring(8),
+                style = TextStyle(
+                    fontFamily = FontFamily(
+                        androidx.compose.ui.text.font.Font(
+                            R.font.playwritehrlijeva,
+                        ),
+                    ),
+                    fontWeight = FontWeight.W900,
+                    fontSize = 40.sp,
+                    color = currentColor,
+                ),
+                modifier = Modifier.offset(x = (1).dp, y = (25).dp)
             )
         }
     }

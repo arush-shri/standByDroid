@@ -57,7 +57,7 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 140.sp,
+                    fontSize = 100.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (-30).dp, y = (0).dp)
@@ -71,7 +71,7 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 140.sp,
+                    fontSize = 100.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
@@ -85,7 +85,7 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 85.sp,
+                    fontSize = 70.sp,
                     color = currentColor,
                 ),
             )
@@ -98,7 +98,7 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 140.sp,
+                    fontSize = 100.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (20).dp, y = (0).dp)
@@ -112,10 +112,24 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 140.sp,
+                    fontSize = 100.sp,
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (30).dp, y = (0).dp)
+            )
+            Text(
+                text = currentTime.substring(8),
+                style = TextStyle(
+                    fontFamily = FontFamily(
+                        androidx.compose.ui.text.font.Font(
+                            R.font.transformers_font,
+                        ),
+                    ),
+                    fontWeight = FontWeight.W900,
+                    fontSize = 40.sp,
+                    color = currentColor,
+                ),
+                modifier = Modifier.offset(x = (30).dp, y = (14).dp)
             )
         }
     }
