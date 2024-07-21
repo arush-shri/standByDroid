@@ -1,6 +1,7 @@
 package com.arush.standbydroid.customComponents
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
@@ -44,29 +45,45 @@ fun DrawScope.drawClockHand(center: Offset, length: Float, color: Color, startWi
 }
 
 fun DrawScope.drawClockStarWarsHand(center: Offset, length: Float, color: Color, width: Float) {
+    val halfWidth = width * 0.65f
     val path = Path().apply {
-        moveTo(center.x - width / 2, center.y)
-        lineTo(center.x + width / 2, center.y)
-        quadraticBezierTo(center.x + width*0.8f, center.y - length + width / 2, center.x, center.y - length)
-        quadraticBezierTo(center.x - width*0.8f, center.y - length + width / 2, center.x - width / 2, center.y)
+
+        moveTo(center.x - halfWidth, center.y)
+        arcTo(
+            Rect(center.x - halfWidth, center.y - halfWidth, center.x + halfWidth, center.y + halfWidth),
+            180f,
+            180f,
+            false
+        )
+        lineTo(center.x + halfWidth, center.y - length + halfWidth)
+        arcTo(
+            Rect(center.x - halfWidth, center.y - length - halfWidth, center.x + halfWidth, center.y - length + halfWidth),
+            0f,
+            -180f,
+            false
+        )
+        lineTo(center.x - halfWidth, center.y)
+
         close()
     }
+
     drawIntoCanvas { canvas ->
         val paint = android.graphics.Paint().apply {
             this.color = color.toArgb()
             setShadowLayer(
-                22f, 15f,0f, color.toArgb()
+                22f, 15f, 0f, color.toArgb()
             )
         }
         canvas.nativeCanvas.withSave {
             drawPath(path.asAndroidPath(), paint)
         }
     }
+
     drawIntoCanvas { canvas ->
         val paint = android.graphics.Paint().apply {
             this.color = color.toArgb()
             setShadowLayer(
-                22f, -15f,0f, color.toArgb()
+                22f, -15f, 0f, color.toArgb()
             )
         }
         canvas.nativeCanvas.withSave {
@@ -75,5 +92,21 @@ fun DrawScope.drawClockStarWarsHand(center: Offset, length: Float, color: Color,
     }
 
     drawPath(path = path, color = color)
-    drawCircle(color = color, radius = (width*0.7).toFloat(), center = center)
+    drawCircle(color = color, radius = (width * 0.75).toFloat(), center = center)
+}
+
+fun DrawScope.drawHarryPotterWandHand(center: Offset, length: Float, color: Color, baseWidth: Float, tipWidth: Float) {
+    val path = Path().apply {
+        // Start at the base of the wand
+        moveTo(center.x - baseWidth / 2, center.y)
+        lineTo(center.x + baseWidth / 2, center.y)
+
+        lineTo(center.x + tipWidth / 2, center.y - length)
+        lineTo(center.x - tipWidth / 2, center.y - length)
+
+        close()
+    }
+
+    drawPath(path = path, color = color)
+    drawCircle(color = color, radius = baseWidth / 2, center = center)
 }

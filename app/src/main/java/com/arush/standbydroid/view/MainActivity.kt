@@ -18,9 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinEight
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFive
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFour
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinOne
+import com.arush.standbydroid.customComponents.clockSkins.ClockSkinSeven
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinSix
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinThree
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinTwo
@@ -73,7 +75,7 @@ fun HomeScreen(){
 fun PortraitLayout(currentTime: String) {
     val intervalMinutes = remember { mutableIntStateOf(1) }
     Column(Modifier.fillMaxSize()) {
-        ClockSkinSix(currentTime, intervalMinutes)
+        ClockSkinEight(currentTime, intervalMinutes)
     }
 }
 
