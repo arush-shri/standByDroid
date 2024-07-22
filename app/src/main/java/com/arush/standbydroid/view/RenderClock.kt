@@ -1,5 +1,9 @@
 package com.arush.standbydroid.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -8,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
@@ -20,7 +25,9 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.withSave
+import com.arush.standbydroid.UserPreferenceManager
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinEight
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFive
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFour
@@ -38,12 +45,22 @@ import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RenderClock(orientation: Int){
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     val coroutineScope = rememberCoroutineScope()
 
+    val intervalMinutes = remember { mutableIntStateOf(1) }
+
+    val context = LocalContext.current
+    val currentSkinIndex = remember {
+        mutableIntStateOf(UserPreferenceManager.getClockSkin(context))
+    }
+    var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 10 }
+
     LaunchedEffect(Unit) {
+        UserPreferenceManager.saveClockSkin(context, pagerState.currentPage)
         coroutineScope.launch {
             while (true) {
                 delay(1000L)
@@ -52,9 +69,27 @@ fun RenderClock(orientation: Int){
         }
     }
 
-    val intervalMinutes = remember { mutableIntStateOf(15) }
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { pageIndex ->
+                UserPreferenceManager.saveClockSkin(context, pageIndex)
+            }
+    }
 
-    ClockSkinTwo(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+    VerticalPager(state = pagerState) { currentPage->
+        when (currentPage){
+            0 -> ClockSkinZero(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            1 -> ClockSkinOne(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            2 -> ClockSkinTwo(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            3 -> ClockSkinThree(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            4 -> ClockSkinFour(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            5 -> ClockSkinFive(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            6 -> ClockSkinSix(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            7 -> ClockSkinSeven(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            8 -> ClockSkinEight(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+            9 -> ClockSkinNine(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+        }
+    }
 }
 
 

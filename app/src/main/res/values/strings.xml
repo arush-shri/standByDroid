@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">StandBy Droid</string>
+    <string name="title_activity_setting">SettingActivity</string>
 </resources>
