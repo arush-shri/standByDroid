@@ -1,8 +1,17 @@
 package com.arush.standbydroid.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.BlendMode
@@ -25,7 +36,11 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.withSave
 import com.arush.standbydroid.UserPreferenceManager
 import com.arush.standbydroid.customComponents.clockSkins.ClockSkinEight
@@ -47,7 +62,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RenderClock(orientation: Int){
+fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -58,6 +73,7 @@ fun RenderClock(orientation: Int){
         mutableIntStateOf(UserPreferenceManager.getClockSkin(context))
     }
     var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 10 }
+    var pageSelected by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         UserPreferenceManager.saveClockSkin(context, pagerState.currentPage)
@@ -69,27 +85,109 @@ fun RenderClock(orientation: Int){
         }
     }
 
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }
-            .collect { pageIndex ->
-                UserPreferenceManager.saveClockSkin(context, pageIndex)
-            }
-    }
+//    LaunchedEffect(pagerState) {
+//        snapshotFlow { pagerState.currentPage }
+//            .collect { pageIndex ->
+//                UserPreferenceManager.saveClockSkin(context, pageIndex)
+//            }
+//    }
 
-    VerticalPager(state = pagerState) { currentPage->
-        when (currentPage){
-            0 -> ClockSkinZero(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            1 -> ClockSkinOne(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            2 -> ClockSkinTwo(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            3 -> ClockSkinThree(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            4 -> ClockSkinFour(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            5 -> ClockSkinFive(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            6 -> ClockSkinSix(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            7 -> ClockSkinSeven(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            8 -> ClockSkinEight(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
-            9 -> ClockSkinNine(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation)
+    if(pageSelected){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF5D5985)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement =  Arrangement.Center,
+        ) {
+            Card(
+                modifier = Modifier.fillMaxSize(0.9f),
+                shape = RoundedCornerShape(30.dp)
+            ) {
+                VerticalPager(state = pagerState) { currentPage->
+                    when (currentPage){
+                        0 -> ClockSkinZero(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        1 -> ClockSkinOne(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        2 -> ClockSkinTwo(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        3 -> ClockSkinThree(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        4 -> ClockSkinFour(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        5 -> ClockSkinFive(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        6 -> ClockSkinSix(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        7 -> ClockSkinSeven(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        8 -> ClockSkinEight(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                        9 -> ClockSkinNine(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected,
+                            callBack = {
+                                pageSelected = false
+                                UserPreferenceManager.saveClockSkin(context, currentPage)
+                            })
+                    }
+                }
+            }
         }
     }
+    else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onLongPress = {
+                        pageSelected = true
+                    }, onDoubleTap = {
+                        toggleFullScreen()
+                    })
+                }
+        ) {
+            when (pagerState.currentPage){
+                0 -> ClockSkinZero(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                1 -> ClockSkinOne(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                2 -> ClockSkinTwo(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                3 -> ClockSkinThree(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                4 -> ClockSkinFour(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                5 -> ClockSkinFive(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                6 -> ClockSkinSix(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                7 -> ClockSkinSeven(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                8 -> ClockSkinEight(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+                9 -> ClockSkinNine(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = {})
+            }
+        }
+    }
+
 }
 
 

@@ -3,10 +3,18 @@ package com.arush.standbydroid.customComponents.clockSkins
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +46,7 @@ import kotlin.math.min
 
 
 @Composable
-fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int){
+fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int, pageSelected: Boolean, callBack: ()->Unit){
     var currentColor by remember { mutableStateOf(Color(0xFFFFD300)) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -54,16 +62,18 @@ fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>, orien
     var fontSize by remember { mutableStateOf(16.sp) }
     val density = LocalDensity.current.density
 
-    Column(
-        modifier = Modifier.fillMaxSize().background(color = Color.Black).onSizeChanged {
-            fontSize = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                (max(it.width, it.height) / density * 0.1).sp
-            } else {
-                (min(it.width, it.height) / density * 0.1).sp
-            }
-        },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =  Arrangement.Center,) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black)
+            .onSizeChanged {
+                fontSize = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    (max(it.width, it.height) / density * 0.1).sp
+                } else {
+                    (min(it.width, it.height) / density * 0.1).sp
+                }
+            },
+        contentAlignment = Alignment.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
             Text(
                 text = currentTime.substring(0,2),
@@ -120,6 +130,22 @@ fun ClockSkinZero(currentTime: String, intervalMinutes: MutableState<Int>, orien
                 ),
                 modifier = Modifier.offset(x = (18).dp, y = (34).dp)
             )
+        }
+        if(pageSelected){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Button(onClick = {
+                    callBack()
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = currentColor)
+                ) {
+                    Icon(imageVector = Icons.Default.Done, contentDescription = "Done")
+                }
+            }
         }
     }
 }

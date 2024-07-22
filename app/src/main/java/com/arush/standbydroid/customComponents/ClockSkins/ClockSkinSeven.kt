@@ -3,6 +3,11 @@ package com.arush.standbydroid.customComponents.clockSkins
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -26,12 +31,13 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import com.arush.standbydroid.R
 import com.arush.standbydroid.view.drawHarryPotterWandHand
 
 @Composable
-fun ClockSkinSeven(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int) {
+fun ClockSkinSeven(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int, pageSelected: Boolean, callBack: ()->Unit) {
     val hour = currentTime.substring(0,2).toInt()
     val minute = currentTime.substring(3,5).toInt()
     val second = currentTime.substring(6,8).toInt()
@@ -56,10 +62,9 @@ fun ClockSkinSeven(currentTime: String, intervalMinutes: MutableState<Int>, orie
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize().background(color = Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =  Arrangement.Center,
+        contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawIntoCanvas { canvas ->
@@ -103,6 +108,22 @@ fun ClockSkinSeven(currentTime: String, intervalMinutes: MutableState<Int>, orie
 
                 rotate(degrees = second * 6f, pivot = center) {
                     drawHarryPotterWandHand(center, radius * 0.75f, currentSecondColor, 16f, 6f)
+                }
+            }
+        }
+        if(pageSelected){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Button(onClick = {
+                    callBack()
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = currentColor)
+                ) {
+                    Icon(imageVector = Icons.Default.Done, contentDescription = "Done")
                 }
             }
         }

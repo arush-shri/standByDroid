@@ -91,16 +91,11 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
 fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
     var pagerState = rememberPagerState (initialPage = 1)  { 2 }
 
-    Column(Modifier.fillMaxSize()
-        .pointerInput(Unit){
-        detectTapGestures(onDoubleTap = {
-            toggleFullScreen()
-        })
-    }) {
+    Column(Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
-                1 -> RenderClock(orientation)
+                1 -> RenderClock(orientation, toggleFullScreen)
             }
         }
     }
@@ -111,16 +106,11 @@ fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
 fun LandscapeLayout(orientation: Int, toggleFullScreen : () -> Unit) {
     val pagerState = rememberPagerState (initialPage = 1)  { 2 }
 
-    Column(Modifier.fillMaxSize()
-        .pointerInput(Unit){
-            detectTapGestures(onDoubleTap = {
-                toggleFullScreen()
-            })
-    }) {
+    Column(Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
-                1 -> RenderClock(orientation)
+                1 -> RenderClock(orientation, toggleFullScreen)
             }
         }
     }

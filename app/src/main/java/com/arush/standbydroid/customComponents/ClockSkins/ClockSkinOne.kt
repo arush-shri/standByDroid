@@ -3,10 +3,17 @@ package com.arush.standbydroid.customComponents.clockSkins
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +42,7 @@ import kotlin.math.min
 
 
 @Composable
-fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int){
+fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int, pageSelected: Boolean, callBack: ()->Unit){
     var currentColor by remember { mutableStateOf(Color(0xFFFFB700)) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -51,7 +58,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orient
     var fontSize by remember { mutableStateOf(16.sp) }
     val density = LocalDensity.current.density
 
-    Column(
+    Box(
         modifier = Modifier.fillMaxSize().background(color = Color.Black).onSizeChanged {
             fontSize = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 (max(it.width, it.height) / density * 0.1).sp
@@ -59,8 +66,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orient
                 (min(it.width, it.height) / density * 0.1).sp
             }
         },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement =  Arrangement.Center,) {
+        contentAlignment = Alignment.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
             Text(
                 text = currentTime.substring(0,2),
@@ -117,6 +123,22 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orient
                 ),
                 modifier = Modifier.offset(x = (1).dp, y = (25).dp)
             )
+        }
+        if(pageSelected){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Button(onClick = {
+                    callBack()
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = currentColor)
+                ) {
+                    Icon(imageVector = Icons.Default.Done, contentDescription = "Done")
+                }
+            }
         }
     }
 }
