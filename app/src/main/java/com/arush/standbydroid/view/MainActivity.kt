@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -64,6 +67,14 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
     val context = LocalContext.current
+    val currentView = LocalView.current
+
+    DisposableEffect(Unit) {
+        currentView.keepScreenOn = true
+        onDispose {
+            currentView.keepScreenOn = false
+        }
+    }
 
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
         // Landscape layout
@@ -79,7 +90,6 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
 @Composable
 fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
     var pagerState = rememberPagerState (initialPage = 1)  { 2 }
-    var indexNumber by remember { mutableIntStateOf(pagerState.currentPage) }
 
     Column(Modifier.fillMaxSize()
         .pointerInput(Unit){
@@ -87,9 +97,6 @@ fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
             toggleFullScreen()
         })
     }) {
-        TabRow(selectedTabIndex = indexNumber) {
-            
-        }
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()

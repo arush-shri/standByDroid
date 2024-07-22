@@ -36,7 +36,7 @@ import kotlin.math.min
 
 @Composable
 fun ClockSkinFour(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int){
-    var currentColor by remember { mutableStateOf(Color(0xFFC9BCBA)) }
+    var currentColor by remember { mutableStateOf(Color(0xFFC9BCBF)) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(intervalMinutes.value) {
