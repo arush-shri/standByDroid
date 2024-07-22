@@ -28,10 +28,10 @@ import kotlin.math.sin
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.res.ResourcesCompat
 import com.arush.standbydroid.R
-import com.arush.standbydroid.customComponents.drawClockStarWarsHand
+import com.arush.standbydroid.view.drawClockStarWarsHand
 
 @Composable
-fun ClockSkinSix(currentTime: String, intervalMinutes: MutableState<Int>) {
+fun ClockSkinSix(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int) {
     val hour = currentTime.substring(0,2).toInt()
     val minute = currentTime.substring(3,5).toInt()
     val second = currentTime.substring(6,8).toInt()
@@ -74,7 +74,7 @@ fun ClockSkinSix(currentTime: String, intervalMinutes: MutableState<Int>) {
                 )
 
                 val numberRadius = radius * 0.85f
-                val textHeight = 40.sp.toPx()
+                val textHeight = (radius * 0.075).sp.toPx()
                 for (number in 1..12) {
                     val angle = (number - 3) * (2 * PI / 12).toFloat()
                     val x = centerX + numberRadius * cos(angle)
@@ -85,7 +85,7 @@ fun ClockSkinSix(currentTime: String, intervalMinutes: MutableState<Int>) {
                         y,
                         Paint().asFrameworkPaint().apply {
                             color = currentColor.toArgb()
-                            textSize = 40.sp.toPx()
+                            textSize = textHeight
                             textAlign = android.graphics.Paint.Align.CENTER
                             isAntiAlias = true
                             typeface = customFont

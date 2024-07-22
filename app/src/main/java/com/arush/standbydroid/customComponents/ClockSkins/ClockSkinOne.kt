@@ -1,5 +1,6 @@
 package com.arush.standbydroid.customComponents.clockSkins
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,19 +19,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arush.standbydroid.R
-import com.arush.standbydroid.customComponents.generateRandomClockColor
+import com.arush.standbydroid.view.generateRandomClockColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 
 
 @Composable
-fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
+fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int){
     var currentColor by remember { mutableStateOf(Color(0xFFFFB700)) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -43,8 +48,17 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
         }
     }
 
+    var fontSize by remember { mutableStateOf(16.sp) }
+    val density = LocalDensity.current.density
+
     Column(
-        modifier = Modifier.fillMaxSize().background(color = Color.Black),
+        modifier = Modifier.fillMaxSize().background(color = Color.Black).onSizeChanged {
+            fontSize = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                (max(it.width, it.height) / density * 0.1).sp
+            } else {
+                (min(it.width, it.height) / density * 0.1).sp
+            }
+        },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement =  Arrangement.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
@@ -57,7 +71,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 90.sp,
+                    fontSize = (fontSize*2.3),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (0).dp, y = (-40).dp)
@@ -71,7 +85,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 80.sp,
+                    fontSize = (fontSize*2),
                     color = currentColor,
                 ),
             )
@@ -84,7 +98,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 90.sp,
+                    fontSize = (fontSize*2.3),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (5).dp, y = (50).dp)
@@ -98,7 +112,7 @@ fun ClockSkinOne(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 40.sp,
+                    fontSize = (fontSize),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (1).dp, y = (25).dp)

@@ -1,5 +1,6 @@
 package com.arush.standbydroid.customComponents.clockSkins
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,19 +19,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arush.standbydroid.R
-import com.arush.standbydroid.customComponents.generateRandomClockColor
+import com.arush.standbydroid.view.generateRandomClockColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
+import kotlin.math.min
 
 
 @Composable
-fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
+fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int){
     var currentColor by remember { mutableStateOf(Color(0xFFFF1E00)) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -43,8 +48,17 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
         }
     }
 
+    var fontSize by remember { mutableStateOf(16.sp) }
+    val density = LocalDensity.current.density
+
     Column(
-        modifier = Modifier.fillMaxSize().background(color = Color.Black),
+        modifier = Modifier.fillMaxSize().background(color = Color.Black).onSizeChanged {
+            fontSize = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                (max(it.width, it.height) / density * 0.1).sp
+            } else {
+                (min(it.width, it.height) / density * 0.1).sp
+            }
+        },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement =  Arrangement.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
@@ -58,7 +72,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                             ),
                         ),
                         fontWeight = FontWeight.W900,
-                        fontSize = 70.sp,
+                        fontSize = (fontSize*1.8),
                         color = currentColor,
                     ),
                     modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
@@ -74,26 +88,12 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                             ),
                         ),
                         fontWeight = FontWeight.W900,
-                        fontSize = 70.sp,
+                        fontSize = (fontSize*1.8),
                         color = currentColor,
                     ),
                     modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
                 )
             }
-//            Text(
-//                text = currentTime.substring(1,2),
-//                style = TextStyle(
-//                    fontFamily = FontFamily(
-//                        androidx.compose.ui.text.font.Font(
-//                            R.font.formula1_bold,
-//                        ),
-//                    ),
-//                    fontWeight = FontWeight.W900,
-//                    fontSize = 100.sp,
-//                    color = currentColor,
-//                ),
-//                modifier = Modifier.offset(x = (-10).dp, y = (0).dp)
-//            )
             Text(
                 text = ":",
                 style = TextStyle(
@@ -103,7 +103,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 60.sp,
+                    fontSize = (fontSize*1.5),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (-10).dp, y = (0).dp)
@@ -117,7 +117,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 70.sp,
+                    fontSize = (fontSize*1.8),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (0).dp, y = (0).dp)
@@ -131,7 +131,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 60.sp,
+                    fontSize = (fontSize*1.5),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (10).dp, y = (0).dp)
@@ -145,7 +145,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>){
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = 70.sp,
+                    fontSize = (fontSize*1.8),
                     color = currentColor,
                 ),
                 modifier = Modifier.offset(x = (20).dp, y = (0).dp)

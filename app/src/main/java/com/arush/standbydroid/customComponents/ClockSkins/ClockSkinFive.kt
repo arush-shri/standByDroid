@@ -19,10 +19,9 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arush.standbydroid.customComponents.drawClockHand
-import com.arush.standbydroid.customComponents.generateRandomClockColor
+import com.arush.standbydroid.view.drawClockHand
+import com.arush.standbydroid.view.generateRandomClockColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -33,7 +32,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.arush.standbydroid.R
 
 @Composable
-fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>) {
+fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int) {
     val hour = currentTime.substring(0,2).toInt()
     val minute = currentTime.substring(3,5).toInt()
     val second = currentTime.substring(6,8).toInt()
@@ -63,7 +62,7 @@ fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement =  Arrangement.Center,
     ) {
-        Canvas(modifier = Modifier.size(330.dp)) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
             drawIntoCanvas { canvas ->
                 val centerX = size.width / 2
                 val centerY = size.height / 2
@@ -76,7 +75,7 @@ fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>) {
                 )
 
                 val numberRadius = radius * 0.85f
-                val textHeight = 28.sp.toPx()
+                val textHeight = (radius * 0.07).sp.toPx()
                 for (number in 1..12) {
                     val angle = (number - 3) * (2 * PI / 12).toFloat()
                     val x = centerX + numberRadius * cos(angle)
@@ -87,7 +86,7 @@ fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>) {
                         y,
                         Paint().asFrameworkPaint().apply {
                             color = currentColor.toArgb()
-                            textSize = 28.sp.toPx()
+                            textSize = textHeight
                             textAlign = android.graphics.Paint.Align.CENTER
                             isAntiAlias = true
                             typeface = customFont
@@ -96,15 +95,15 @@ fun ClockSkinFive(currentTime: String, intervalMinutes: MutableState<Int>) {
                 }
 
                 rotate(degrees = hour * 30f + minute * 0.5f, pivot = center) {
-                    drawClockHand(center, radius * 0.50f, currentHourColor, 10f, 2f)
+                    drawClockHand(center, radius * 0.50f, currentHourColor, 16f, 8f)
                 }
 
                 rotate(degrees = minute * 6f + second * 0.1f, pivot = center) {
-                    drawClockHand(center, radius * 0.65f, currentMinuteColor, 10f, 2f)
+                    drawClockHand(center, radius * 0.65f, currentMinuteColor, 16f, 8f)
                 }
 
                 rotate(degrees = second * 6f, pivot = center) {
-                    drawClockHand(center, radius * 0.75f, currentSecondColor, 10f, 2f)
+                    drawClockHand(center, radius * 0.75f, currentSecondColor, 16f, 8f)
                 }
             }
         }

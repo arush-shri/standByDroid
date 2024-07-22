@@ -8,36 +8,24 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinEight
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFive
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinFour
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinOne
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinSeven
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinSix
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinThree
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinTwo
-import com.arush.standbydroid.customComponents.clockSkins.ClockSkinZero
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.arush.standbydroid.ui.theme.StandByDroidTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            hide(WindowInsetsCompat.Type.navigationBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
         setContent {
             StandByDroidTheme {
                 HomeScreen()
@@ -50,39 +38,27 @@ class MainActivity : ComponentActivity() {
 fun HomeScreen(){
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
-    var currentTime by remember { mutableStateOf(getCurrentTime()) }
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            while (true) {
-                delay(1000L)
-                currentTime = getCurrentTime()
-            }
-        }
-    }
 
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
         // Landscape layout
-        LandscapeLayout(currentTime)
+        LandscapeLayout(orientation)
     } else {
         // Portrait layout
-        PortraitLayout(currentTime)
+        PortraitLayout(orientation)
     }
 }
 
 @Composable
-fun PortraitLayout(currentTime: String) {
-    val intervalMinutes = remember { mutableIntStateOf(1) }
+fun PortraitLayout(orientation: Int) {
     Column(Modifier.fillMaxSize()) {
-        ClockSkinEight(currentTime, intervalMinutes)
+        RenderClock(orientation)
     }
 }
 
 @Composable
-fun LandscapeLayout(currentTime: String) {
+fun LandscapeLayout(orientation: Int) {
     Column(Modifier.fillMaxSize()) {
-
+        RenderClock(orientation)
     }
 }
 
@@ -92,9 +68,4 @@ fun GreetingPreview() {
     StandByDroidTheme {
         HomeScreen()
     }
-}
-
-private fun getCurrentTime(): String {
-    val sdf = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
-    return sdf.format(Date())
 }
