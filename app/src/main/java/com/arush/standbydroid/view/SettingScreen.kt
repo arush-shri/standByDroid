@@ -15,6 +15,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,52 +44,71 @@ fun SettingScreen(){
 }
 
 @Composable
-fun LandscapeSettingLayout(orientation: Int){
+private fun LandscapeSettingLayout(orientation: Int){
+    var screenToShow by remember { mutableStateOf("Permission") }
+
     Row(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.Black),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start) {
-        Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.2f).background(color = Color(
-            0xFF0F0F0F
-        )
-        ),
+        Box(modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.2f)
+            .background(
+                color = Color(
+                    0xFF0F0F0F
+                )
+            ),
             contentAlignment = Alignment.TopStart) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 TabViewButton(buttonText = "Permission") {
-
+                    screenToShow = "Permission"
                 }
                 TabViewButton(buttonText = "Behaviour") {
-
+                    screenToShow = "Behaviour"
                 }
                 TabViewButton(buttonText = "Customize") {
-
+                    screenToShow = "Customize"
                 }
                 TabViewButton(buttonText = "Support") {
-
+                    screenToShow = "Support"
                 }
             }
         }
-        Box(modifier = Modifier.fillMaxSize().background(color = Color(0xFF101111))) {
-            
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFF101111))) {
+
+            when(screenToShow){
+                "Permission" -> PermissionsScreen(orientation = orientation)
+                "Behaviour" -> BehaviourScreen(orientation = orientation)
+                "Customize" -> CustomizeScreen(orientation = orientation)
+                "Support" -> SupportScreen(orientation = orientation)
+            }
         }
     }
 }
 
 @Composable
-fun PortraitSettingLayout(orientation: Int){
+private fun PortraitSettingLayout(orientation: Int){
     val buttons = listOf("Permission", "Behaviour", "Customize", "Support")
+    var screenToShow by remember { mutableStateOf("Permission") }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.Black),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(modifier = Modifier.fillMaxHeight(0.08f).fillMaxWidth().background(color = Color(0xFF0F0F0F)
-        ),
+        Box(modifier = Modifier
+            .fillMaxHeight(0.08f)
+            .fillMaxWidth()
+            .background(
+                color = Color(0xFF0F0F0F)
+            ),
             contentAlignment = Alignment.TopCenter) {
             LazyRow(
                 modifier = Modifier.fillMaxSize(),
@@ -94,13 +117,21 @@ fun PortraitSettingLayout(orientation: Int){
             ) {
                 items(buttons) { buttonText ->
                     TabViewButton(buttonText = buttonText) {
-                        // Add your onClick action here
+                        screenToShow = buttonText
                     }
                 }
             }
         }
-        Box(modifier = Modifier.fillMaxSize().background(color = Color(0xFF101111))) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFF101111))) {
 
+            when(screenToShow){
+                "Permission" -> PermissionsScreen(orientation = orientation)
+                "Behaviour" -> BehaviourScreen(orientation = orientation)
+                "Customize" -> CustomizeScreen(orientation = orientation)
+                "Support" -> SupportScreen(orientation = orientation)
+            }
         }
     }
 }
