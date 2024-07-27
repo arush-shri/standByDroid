@@ -42,16 +42,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PermissionsScreen(orientation: Int){
-    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-        LandscapeView()
-    }
-    else{
-        PortraitView()
-    }
+    SettingPermissionView(orientation)
 }
 
 @Composable
-private fun LandscapeView(){
+private fun SettingPermissionView(orientation: Int){
     val context = LocalContext.current
     var isSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getCalendarAccess(context)) }
     var isNotificationSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getNotificationAccess(context)) }
@@ -85,7 +80,13 @@ private fun LandscapeView(){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 20.dp, top = 30.dp, end = 20.dp)
+            .then(
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    Modifier.padding(start = 20.dp, top = 30.dp, end = 20.dp)
+                } else {
+                    Modifier.padding(start = 0.dp, top = 0.dp, end = 0.dp)
+                }
+            )
     ) {
         Row(
             modifier = Modifier
@@ -94,7 +95,16 @@ private fun LandscapeView(){
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
                 Text(
                     text = "Calendar access",
                     style = TextStyle(
@@ -139,7 +149,16 @@ private fun LandscapeView(){
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
                 Text(
                     text = "Notification access",
                     style = TextStyle(
@@ -176,7 +195,16 @@ private fun LandscapeView(){
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
                 Text(
                     text = "Picture access",
                     style = TextStyle(
@@ -231,7 +259,16 @@ private fun LandscapeView(){
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
                 Text(
                     text = "Battery status access",
                     style = TextStyle(
@@ -257,69 +294,6 @@ private fun LandscapeView(){
                     } else {
                         isBatterySwitchChecked = false
                         UserPreferenceManager.saveBatteryAccess(context, false)
-                    }
-                }
-            )
-        }
-    }
-}
-
-@Composable
-private fun PortraitView(){
-    val context = LocalContext.current
-    var isSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getCalendarAccess(context)) }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        isSwitchChecked = isGranted
-        UserPreferenceManager.saveCalendarAccess(context, isGranted)
-    }
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.8f)
-            ) {
-                Text(
-                    text = "Calendar access",
-                    style = TextStyle(
-                        fontSize = 20.sp
-                    ),
-                    color = Color.White
-                )
-                Text(
-                    text = "Please provide access to your calendar to get events and reminders on app",
-                    style = TextStyle(
-                        fontSize = 14.sp
-                    ),
-                    color = Color(0xFF586F81)
-                )
-            }
-
-            Switch(
-                checked = isSwitchChecked,
-                onCheckedChange = { isChecked ->
-                    if (isChecked) {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.READ_CALENDAR
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            UserPreferenceManager.saveCalendarAccess(context, true)
-                            isSwitchChecked = true
-                        } else {
-                            permissionLauncher.launch(Manifest.permission.READ_CALENDAR)
-                        }
-                    } else {
-                        isSwitchChecked = false
-                        UserPreferenceManager.saveCalendarAccess(context, false)
                     }
                 }
             )

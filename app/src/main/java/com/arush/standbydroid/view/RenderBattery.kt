@@ -39,14 +39,15 @@ import com.arush.standbydroid.listeners.startBatteryListener
 fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
     val context = LocalContext.current
     var isBatterySwitchChecked by remember { mutableStateOf(UserPreferenceManager.getBatteryAccess(context)) }
-    var batteryStatus by remember { mutableStateOf(startBatteryListener(context)) }
-    var isCharging by remember { mutableStateOf(getChargingStatus(batteryStatus)) }
-    var batteryPct by remember { mutableStateOf(getBatteryPercent(batteryStatus)) }
+    var batteryStatus by remember { mutableStateOf<Intent?>(null) }
+    var isCharging by remember { mutableStateOf(false) }
+    var batteryPct by remember { mutableStateOf<Float?>(null) }
     val currentSkinIndex = remember { mutableIntStateOf(UserPreferenceManager.getBatterySkin(context)) }
     var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 10 }
     var pageSelected by remember { mutableStateOf(false) }
 
     DisposableEffect(isBatterySwitchChecked) {
+        batteryStatus = startBatteryListener(context)
         val receiver = PowerConnectionReceiver { chargingStatus, batteryPercentage ->
             isCharging = chargingStatus
             batteryPct = batteryPercentage

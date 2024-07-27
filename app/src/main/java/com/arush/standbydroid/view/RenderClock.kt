@@ -60,10 +60,8 @@ import kotlin.random.Random
 fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     val coroutineScope = rememberCoroutineScope()
-
-    val intervalMinutes = remember { mutableIntStateOf(1) }
-
     val context = LocalContext.current
+    val intervalMinutes = remember { mutableIntStateOf(UserPreferenceManager.getColorChangeTime(context)) }
     val currentSkinIndex = remember {
         mutableIntStateOf(UserPreferenceManager.getClockSkin(context))
     }

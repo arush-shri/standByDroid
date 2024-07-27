@@ -76,35 +76,12 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
         }
     }
 
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        // Landscape layout
-        Toast.makeText(context, "Double tap to exit full screen.", Toast.LENGTH_SHORT).show()
-        LandscapeLayout(orientation ,toggleFullScreen)
-    } else {
-        // Portrait layout
-        PortraitLayout(orientation, toggleFullScreen)
-    }
+    MainScreenLayout(orientation ,toggleFullScreen)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
-    var pagerState = rememberPagerState (initialPage = 1)  { 3 }
-
-    Column(Modifier.fillMaxSize()) {
-        HorizontalPager(state = pagerState) {currentPage ->
-            when (currentPage) {
-                0 -> SettingScreen()
-                1 -> RenderClock(orientation, toggleFullScreen)
-                2 -> RenderBattery(orientation, toggleFullScreen)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun LandscapeLayout(orientation: Int, toggleFullScreen : () -> Unit) {
+private fun MainScreenLayout(orientation: Int, toggleFullScreen : () -> Unit) {
     val pagerState = rememberPagerState (initialPage = 1)  { 3 }
 
     Column(Modifier.fillMaxSize()) {
