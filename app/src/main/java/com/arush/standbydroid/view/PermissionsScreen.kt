@@ -1,6 +1,8 @@
 package com.arush.standbydroid.view
 
 import android.Manifest
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -18,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.arush.standbydroid.UserPreferenceManager
+import com.arush.standbydroid.listeners.PowerConnectionReceiver
+import com.arush.standbydroid.listeners.startBatteryListener
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun PermissionsScreen(orientation: Int){
@@ -48,6 +56,7 @@ private fun LandscapeView(){
     var isSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getCalendarAccess(context)) }
     var isNotificationSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getNotificationAccess(context)) }
     var isPictureSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getPictureAccess(context)) }
+    var isBatterySwitchChecked by remember { mutableStateOf(UserPreferenceManager.getBatteryAccess(context)) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -150,7 +159,7 @@ private fun LandscapeView(){
             Switch(
                 checked = isNotificationSwitchChecked,
                 onCheckedChange = { isChecked ->
-                    if (!isNotificationSwitchChecked) {
+                    if (isChecked) {
                         isNotificationSwitchChecked = true
                         UserPreferenceManager.saveNotificationAccess(context, true)
                     } else {
@@ -211,6 +220,43 @@ private fun LandscapeView(){
                     } else {
                         isPictureSwitchChecked = false
                         UserPreferenceManager.savePictureAccess(context, false)
+                    }
+                }
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "Battery status access",
+                    style = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    color = Color.White
+                )
+                Text(
+                    text = "Please provide access to your battery status to see on the app",
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    ),
+                    color = Color(0xFF586F81)
+                )
+            }
+
+            Switch(
+                checked = isBatterySwitchChecked,
+                onCheckedChange = { isChecked ->
+                    if (isChecked) {
+                        isBatterySwitchChecked = true
+                        UserPreferenceManager.saveBatteryAccess(context, true)
+                    } else {
+                        isBatterySwitchChecked = false
+                        UserPreferenceManager.saveBatteryAccess(context, false)
                     }
                 }
             )

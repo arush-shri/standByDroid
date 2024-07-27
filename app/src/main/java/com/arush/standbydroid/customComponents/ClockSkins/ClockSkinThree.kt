@@ -68,7 +68,7 @@ fun ClockSkinThree(currentTime: String, intervalMinutes: MutableState<Int>, orie
         },
         contentAlignment = Alignment.Center,) {
         Row(verticalAlignment = Alignment.CenterVertically)  {
-            if(currentTime.substring(9) == "pm"){
+            if(currentTime.substring(9) == "pm" && currentTime.substring(0,2).toInt() != 12){
                 Text(
                     text = ((currentTime.substring(0,2)).toInt() + 12).toString(),
                     style = TextStyle(

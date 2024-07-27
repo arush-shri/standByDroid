@@ -89,13 +89,14 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
-    var pagerState = rememberPagerState (initialPage = 1)  { 2 }
+    var pagerState = rememberPagerState (initialPage = 1)  { 3 }
 
     Column(Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
                 1 -> RenderClock(orientation, toggleFullScreen)
+                2 -> RenderBattery(orientation, toggleFullScreen)
             }
         }
     }
@@ -104,13 +105,14 @@ fun PortraitLayout(orientation: Int, toggleFullScreen : () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LandscapeLayout(orientation: Int, toggleFullScreen : () -> Unit) {
-    val pagerState = rememberPagerState (initialPage = 1)  { 2 }
+    val pagerState = rememberPagerState (initialPage = 1)  { 3 }
 
     Column(Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
                 1 -> RenderClock(orientation, toggleFullScreen)
+                2 -> RenderBattery(orientation, toggleFullScreen)
             }
         }
     }

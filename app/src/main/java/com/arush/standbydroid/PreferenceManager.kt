@@ -6,9 +6,11 @@ import android.content.SharedPreferences
 object UserPreferenceManager {
     private const val PREFS_NAME = "StandByDroidPreferences"
     private const val KEY_CLOCK_SKIN = "key_clock_skin"
-    private const val KEY_CALENDAR_ACCESS = "key_calendar_skin"
-    private const val KEY_NOTIFICATION_ACCESS = "key_notification_skin"
+    private const val KEY_CALENDAR_ACCESS = "key_calendar_access"
+    private const val KEY_NOTIFICATION_ACCESS = "key_notification_access"
     private const val KEY_PICTURE_ACCESS = "key_picture_skin"
+    private const val KEY_BATTERY_ACCESS = "key_battery_access"
+    private const val KEY_BATTERY_SKIN = "key_battery_skin"
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -49,5 +51,23 @@ object UserPreferenceManager {
 
     fun getPictureAccess(context: Context): Boolean {
         return getPreferences(context).getBoolean(KEY_PICTURE_ACCESS, false)
+    }
+    fun saveBatteryAccess(context: Context, isEnabled: Boolean) {
+        val editor = getPreferences(context).edit()
+        editor.putBoolean(KEY_BATTERY_ACCESS, isEnabled)
+        editor.apply()
+    }
+
+    fun getBatteryAccess(context: Context): Boolean {
+        return getPreferences(context).getBoolean(KEY_BATTERY_ACCESS, false)
+    }
+    fun saveBatterySkin(context: Context, skinIndex: Int) {
+        val editor = getPreferences(context).edit()
+        editor.putInt(KEY_BATTERY_SKIN, skinIndex)
+        editor.apply()
+    }
+
+    fun getBatterySkin(context: Context): Int {
+        return getPreferences(context).getInt(KEY_BATTERY_SKIN, 0)
     }
 }

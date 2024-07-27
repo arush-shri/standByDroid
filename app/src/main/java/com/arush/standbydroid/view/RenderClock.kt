@@ -100,7 +100,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
                 shape = RoundedCornerShape(30.dp)
             ) {
                 VerticalPager(state = pagerState) { currentPage ->
-                    DisplayClockSkin(
+                    DisplaySkin(
                         currentPage = currentPage,
                         currentTime = currentTime,
                         intervalMinutes = intervalMinutes,
@@ -126,7 +126,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
                     })
                 }
         ) {
-            DisplayClockSkin(
+            DisplaySkin(
                 currentPage = pagerState.currentPage,
                 currentTime = currentTime,
                 intervalMinutes = intervalMinutes,
@@ -138,7 +138,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
     }
 }
 @Composable
-fun DisplayClockSkin(currentPage: Int, currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int, pageSelected: Boolean, callBack: () -> Unit) {
+private fun DisplaySkin(currentPage: Int, currentTime: String, intervalMinutes: MutableState<Int>, orientation: Int, pageSelected: Boolean, callBack: () -> Unit) {
     when (currentPage) {
         0 -> ClockSkinZero(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
         1 -> ClockSkinOne(currentTime = currentTime, intervalMinutes = intervalMinutes, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
