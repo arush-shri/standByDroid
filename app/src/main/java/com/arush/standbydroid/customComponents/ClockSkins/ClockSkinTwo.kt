@@ -2,9 +2,7 @@ package com.arush.standbydroid.customComponents.clockSkins
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -34,8 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arush.standbydroid.R
-import com.arush.standbydroid.view.LandscapeLayout
-import com.arush.standbydroid.view.PortraitLayout
 import com.arush.standbydroid.view.generateRandomClockColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
