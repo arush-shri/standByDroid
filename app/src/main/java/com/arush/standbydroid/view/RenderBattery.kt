@@ -33,6 +33,7 @@ import com.arush.standbydroid.listeners.PowerConnectionReceiver
 import com.arush.standbydroid.listeners.getBatteryPercent
 import com.arush.standbydroid.listeners.getChargingStatus
 import com.arush.standbydroid.listeners.startBatteryListener
+import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -40,6 +41,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
     val context = LocalContext.current
     var isBatterySwitchChecked by remember { mutableStateOf(UserPreferenceManager.getBatteryAccess(context)) }
     var batteryStatus by remember { mutableStateOf<Intent?>(null) }
+    val intervalMinutes = remember { mutableIntStateOf(UserPreferenceManager.getColorChangeTime(context)) }
     var isCharging by remember { mutableStateOf(false) }
     var batteryPct by remember { mutableStateOf<Float?>(null) }
     val currentSkinIndex = remember { mutableIntStateOf(UserPreferenceManager.getBatterySkin(context)) }
@@ -84,6 +86,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
                 VerticalPager(state = pagerState) { currentPage ->
                     displaySkin(
                         currentPage = pagerState.currentPage,
+                        intervalMinutes = intervalMinutes,
                         chargingStatus = isCharging,
                         chargingPercentage = batteryPct,
                         orientation = orientation,
@@ -110,6 +113,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
         ) {
             displaySkin(
                 currentPage = pagerState.currentPage,
+                intervalMinutes = intervalMinutes,
                 chargingStatus = isCharging,
                 chargingPercentage = batteryPct,
                 orientation = orientation,
@@ -121,7 +125,27 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
 }
 
 @Composable
-private fun displaySkin(currentPage: Int, chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit){
+private fun displaySkin(currentPage: Int, intervalMinutes: MutableState<Int>, chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit){
     Text(text = chargingPercentage.toString(), color = Color.Red)
     Text(text = chargingStatus.toString(), color = Color.Red)
+}
+
+fun generateRandomBatteryColor(): Color {
+    val random = Random
+    var red: Float
+    var green: Float
+    var blue: Float
+
+    do {
+        red = random.nextFloat()
+        green = random.nextFloat()
+        blue = random.nextFloat()
+
+    } while (red < 0.5f || green < 0.5f || blue < 0.5f)
+    return Color(
+        red = red,
+        green = green,
+        blue = blue,
+        alpha = 1f
+    )
 }

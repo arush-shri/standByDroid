@@ -36,6 +36,7 @@ fun BehaviourScreen(orientation: Int){
 private fun BehaviourScreenView(orientation: Int){
     val context = LocalContext.current
     var colorChangeTime by remember { mutableIntStateOf(UserPreferenceManager.getColorChangeTime(context)) }
+    var isShowOnChargingSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getShowOnChargingPreference(context)) }
     var sliderPosition by remember { mutableFloatStateOf((colorChangeTime - 5) / (60f - 5f)) }
 
     Column(
@@ -93,6 +94,52 @@ private fun BehaviourScreenView(orientation: Int){
                     )
                 )
             }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 5.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
+                Text(
+                    text = "Show on Charging",
+                    style = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    color = Color.White
+                )
+                Text(
+                    text = "Turn this setting on to see stand by screen on charging",
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    ),
+                    color = Color(0xFF586F81)
+                )
+            }
+
+            Switch(
+                checked = isShowOnChargingSwitchChecked,
+                onCheckedChange = { isChecked ->
+                    if (isChecked) {
+                        isShowOnChargingSwitchChecked = true
+                        UserPreferenceManager.saveShowOnChargingPreference(context, true)
+                    } else {
+                        isShowOnChargingSwitchChecked = false
+                        UserPreferenceManager.saveShowOnChargingPreference(context, false)
+                    }
+                }
+            )
         }
     }
 }

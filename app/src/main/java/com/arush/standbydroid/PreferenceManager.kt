@@ -12,6 +12,7 @@ object UserPreferenceManager {
     private const val KEY_BATTERY_ACCESS = "key_battery_access"
     private const val KEY_BATTERY_SKIN = "key_battery_skin"
     private const val KEY_COLOR_CHANGE_TIME = "key_color_change_time"
+    private const val KEY_SHOW_ON_CHARGING = "key_show_on_charging"
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -69,6 +70,15 @@ object UserPreferenceManager {
     }
     fun getBatteryAccess(context: Context): Boolean {
         return getPreferences(context).getBoolean(KEY_BATTERY_ACCESS, false)
+    }
+
+    fun saveShowOnChargingPreference(context: Context, isEnabled: Boolean) {
+        val editor = getPreferences(context).edit()
+        editor.putBoolean(KEY_SHOW_ON_CHARGING, isEnabled)
+        editor.apply()
+    }
+    fun getShowOnChargingPreference(context: Context): Boolean {
+        return getPreferences(context).getBoolean(KEY_SHOW_ON_CHARGING, false)
     }
 
     fun saveBatterySkin(context: Context, skinIndex: Int) {
