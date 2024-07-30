@@ -11,8 +11,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -23,7 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -89,15 +94,29 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MainScreenLayout(orientation: Int, toggleFullScreen : () -> Unit) {
-    val pagerState = rememberPagerState (initialPage = 1)  { 3 }
+    val pagerState = rememberPagerState (initialPage = 1)  { 2 }
 
     Column(Modifier.fillMaxSize()) {
         HorizontalPager(state = pagerState) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
-                1 -> RenderClock(orientation, toggleFullScreen)
-                2 -> RenderBattery(orientation, toggleFullScreen)
+                1 -> RenderScreenOneLandscape(orientation, toggleFullScreen)
             }
         }
+    }
+}
+
+@Composable
+private fun RenderScreenOneLandscape(orientation: Int, toggleFullScreen : () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Black),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // Ensuring each component takes up equal space in the Row
+        RenderClock(orientation, toggleFullScreen, Modifier.weight(1f))
+        RenderBattery(orientation, toggleFullScreen, Modifier.weight(1f))
     }
 }

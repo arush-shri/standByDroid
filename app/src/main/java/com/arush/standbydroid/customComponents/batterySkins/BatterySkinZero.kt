@@ -14,6 +14,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -102,8 +107,8 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
             val canvasHeight = size.height
 
             val rectSize = min(canvasWidth, canvasHeight) / 1.5f
-            val rectWidth = rectSize * 1.5f
-            val rectHeight = rectSize / 1.5f
+            val rectWidth = rectSize * 1.3f
+            val rectHeight = rectSize / 2.2f
             val rectOffsetX = (canvasWidth - rectWidth) / 2
             val rectOffsetY = (canvasHeight - rectHeight) / 2
 
@@ -129,8 +134,8 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                 drawRoundRect(
                     color = currentColor,
                     topLeft = Offset(partOffsetX, innerRectOffsetY),
-                    size = Size(partWidth - if(i==4) 0.dp.toPx() else 4.dp.toPx(), innerRectHeight),
-                    cornerRadius = CornerRadius(innerRectHeight / 9, innerRectHeight / 9)
+                    size = Size(partWidth - if(i==4) 0.dp.toPx() else 2.dp.toPx(), innerRectHeight),
+                    cornerRadius = CornerRadius(innerRectHeight / 6, innerRectHeight / 6)
                 )
                 i++
             }
@@ -139,7 +144,7 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                     color = currentColor,
                     topLeft = Offset((innerRectOffsetX + i * partWidth),innerRectOffsetY),
                     size = Size(partWidth * (chargingPercentage - (i*20))/20, innerRectHeight),
-                    cornerRadius = CornerRadius(innerRectHeight / 9, innerRectHeight / 9)
+                    cornerRadius = CornerRadius(innerRectHeight / 6, innerRectHeight / 6)
                 )
             }
             else if(chargingPercentage.toInt() < 100){
@@ -147,7 +152,7 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                     color = Color(0xFFF86622),
                     topLeft = Offset((innerRectOffsetX + i * partWidth),innerRectOffsetY),
                     size = Size(partWidth * animatedFloat, innerRectHeight),
-                    cornerRadius = CornerRadius(innerRectHeight / 10 * animatedFloat, innerRectHeight / 10 * animatedFloat)
+                    cornerRadius = CornerRadius(innerRectHeight / 7 * animatedFloat, innerRectHeight / 7 * animatedFloat)
                 )
             }
             drawIntoCanvas { canvas->
@@ -157,12 +162,28 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                     (canvasHeight + rectHeight + 60.dp.toPx()) / 2,
                     Paint().asFrameworkPaint().apply {
                         color = currentColor.toArgb()
-                        textSize = 30.sp.toPx()
+                        textSize = 36.sp.toPx()
                         textAlign = android.graphics.Paint.Align.CENTER
                         isAntiAlias = true
                         typeface = customFont
                     }
                 )
+            }
+        }
+        if(pageSelected){
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Button(onClick = {
+                    callBack()
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = currentColor)
+                ) {
+                    Icon(imageVector = Icons.Default.Done, contentDescription = "Done")
+                }
             }
         }
     }

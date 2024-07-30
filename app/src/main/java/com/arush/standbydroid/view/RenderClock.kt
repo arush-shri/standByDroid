@@ -57,7 +57,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
+fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier){
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -87,7 +87,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
 
     if (pageSelected) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(Color(0xFF5D5985)),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -114,7 +114,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit){
         }
     } else {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectTapGestures(onLongPress = {

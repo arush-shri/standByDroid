@@ -75,10 +75,10 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>, orient
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = (fontSize*2.5),
+                    fontSize = (fontSize*3),
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (-30).dp, y = (0).dp)
+                modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
             )
             Text(
                 text = currentTime.substring(1,2),
@@ -89,10 +89,10 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>, orient
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = (fontSize*2.5),
+                    fontSize = (fontSize*3),
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (-20).dp, y = (0).dp)
+                modifier = Modifier.offset(x = (-10).dp, y = (0).dp)
             )
             Text(
                 text = ":",
@@ -116,10 +116,10 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>, orient
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = (fontSize*2.5),
+                    fontSize = (fontSize*3),
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (20).dp, y = (0).dp)
+                modifier = Modifier.offset(x = (10).dp, y = (0).dp)
             )
             Text(
                 text = currentTime.substring(4,5),
@@ -130,10 +130,10 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>, orient
                         ),
                     ),
                     fontWeight = FontWeight.W900,
-                    fontSize = (fontSize*2.5),
+                    fontSize = (fontSize*3),
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (30).dp, y = (0).dp)
+                modifier = Modifier.offset(x = (20).dp, y = (0).dp)
             )
             Text(
                 text = currentTime.substring(8),
@@ -147,7 +147,7 @@ fun ClockSkinTwo(currentTime: String, intervalMinutes: MutableState<Int>, orient
                     fontSize = (fontSize),
                     color = currentColor,
                 ),
-                modifier = Modifier.offset(x = (30).dp, y = (14).dp)
+                modifier = Modifier.offset(x = (15).dp, y = (14).dp)
             )
         }
         if(pageSelected){

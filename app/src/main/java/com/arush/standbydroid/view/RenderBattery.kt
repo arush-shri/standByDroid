@@ -2,6 +2,7 @@ package com.arush.standbydroid.view
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -38,7 +39,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
+fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier){
     val context = LocalContext.current
     var isBatterySwitchChecked by remember { mutableStateOf(UserPreferenceManager.getBatteryAccess(context)) }
     var batteryStatus by remember { mutableStateOf<Intent?>(null) }
@@ -74,7 +75,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
 
     if (pageSelected) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(Color(0xFF5D5985)),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,7 +95,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
                         pageSelected = pageSelected,
                         callBack = {
                             pageSelected = false
-                            UserPreferenceManager.saveClockSkin(context, currentPage)
+                            UserPreferenceManager.saveBatterySkin(context, currentPage)
                         }
                     )
                 }
@@ -102,7 +103,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
         }
     } else {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
                     detectTapGestures(onLongPress = {
@@ -127,15 +128,8 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
 
 @Composable
 private fun displaySkin(currentPage: Int, intervalMinutes: MutableState<Int>, chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit){
-    BatterySkinZero(
-        currentPage = currentPage,
-        intervalMinutes = intervalMinutes,
-        chargingStatus = chargingStatus,
-        chargingPercentage = chargingPercentage,
-        orientation = orientation,
-        pageSelected = pageSelected
-    ) {
-
+    when(currentPage){
+        0 -> BatterySkinZero(currentPage = currentPage, intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
     }
 }
 
