@@ -29,6 +29,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.arush.standbydroid.UserPreferenceManager
+import com.arush.standbydroid.customComponents.batterySkins.BatterySkinZero
 import com.arush.standbydroid.listeners.PowerConnectionReceiver
 import com.arush.standbydroid.listeners.getBatteryPercent
 import com.arush.standbydroid.listeners.getChargingStatus
@@ -43,7 +44,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
     var batteryStatus by remember { mutableStateOf<Intent?>(null) }
     val intervalMinutes = remember { mutableIntStateOf(UserPreferenceManager.getColorChangeTime(context)) }
     var isCharging by remember { mutableStateOf(false) }
-    var batteryPct by remember { mutableStateOf<Float?>(null) }
+    var batteryPct by remember { mutableStateOf<Float?>(100f) }
     val currentSkinIndex = remember { mutableIntStateOf(UserPreferenceManager.getBatterySkin(context)) }
     var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 10 }
     var pageSelected by remember { mutableStateOf(false) }
@@ -126,8 +127,16 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit){
 
 @Composable
 private fun displaySkin(currentPage: Int, intervalMinutes: MutableState<Int>, chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit){
-    Text(text = chargingPercentage.toString(), color = Color.Red)
-    Text(text = chargingStatus.toString(), color = Color.Red)
+    BatterySkinZero(
+        currentPage = currentPage,
+        intervalMinutes = intervalMinutes,
+        chargingStatus = chargingStatus,
+        chargingPercentage = chargingPercentage,
+        orientation = orientation,
+        pageSelected = pageSelected
+    ) {
+
+    }
 }
 
 fun generateRandomBatteryColor(): Color {
