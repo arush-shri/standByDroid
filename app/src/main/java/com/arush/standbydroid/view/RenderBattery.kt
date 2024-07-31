@@ -30,6 +30,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.arush.standbydroid.UserPreferenceManager
+import com.arush.standbydroid.customComponents.batterySkins.BatterySkinOne
 import com.arush.standbydroid.customComponents.batterySkins.BatterySkinZero
 import com.arush.standbydroid.listeners.PowerConnectionReceiver
 import com.arush.standbydroid.listeners.getBatteryPercent
@@ -129,7 +130,8 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
 @Composable
 private fun displaySkin(currentPage: Int, intervalMinutes: MutableState<Int>, chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit){
     when(currentPage){
-        0 -> BatterySkinZero(currentPage = currentPage, intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
+        0 -> BatterySkinZero(intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
+        1 -> BatterySkinOne(intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
     }
 }
 

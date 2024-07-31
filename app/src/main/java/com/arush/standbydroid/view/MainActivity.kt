@@ -116,7 +116,7 @@ private fun RenderScreenOneLandscape(orientation: Int, toggleFullScreen : () -> 
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Ensuring each component takes up equal space in the Row
-        RenderClock(orientation, toggleFullScreen, Modifier.weight(1f))
+        RenderClock(orientation, toggleFullScreen, Modifier.weight(1.3f))
         RenderBattery(orientation, toggleFullScreen, Modifier.weight(1f))
     }
 }

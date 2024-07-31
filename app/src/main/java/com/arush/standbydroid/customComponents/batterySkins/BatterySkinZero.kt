@@ -57,7 +57,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Composable
-fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
+fun BatterySkinZero(intervalMinutes: MutableState<Int>,
                     chargingStatus: Boolean, chargingPercentage: Float?, orientation: Int, pageSelected: Boolean, callBack: () -> Unit) {
     var currentColor by remember { mutableStateOf(Color(0xFF95E251)) }
     var fontSize by remember { mutableStateOf(16.sp) }
