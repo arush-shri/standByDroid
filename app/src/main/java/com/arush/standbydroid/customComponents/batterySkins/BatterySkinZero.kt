@@ -129,7 +129,7 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
 
             val partWidth = innerRectWidth / 5
             var i = 0
-            while ( i < (chargingPercentage?.div(20)!!).toInt()) {
+            while ( chargingPercentage != null && i < (chargingPercentage.div(20)).toInt()) {
                 val partOffsetX = innerRectOffsetX + i * partWidth
                 drawRoundRect(
                     color = currentColor,
@@ -139,7 +139,7 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                 )
                 i++
             }
-            if(chargingPercentage.toInt() < 100 && !chargingStatus){
+            if( chargingPercentage != null && chargingPercentage.toInt() < 100 && !chargingStatus){
                 drawRoundRect(
                     color = currentColor,
                     topLeft = Offset((innerRectOffsetX + i * partWidth),innerRectOffsetY),
@@ -147,7 +147,7 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                     cornerRadius = CornerRadius(innerRectHeight / 6, innerRectHeight / 6)
                 )
             }
-            else if(chargingPercentage.toInt() < 100){
+            else if( chargingPercentage != null && chargingPercentage.toInt() < 100){
                 drawRoundRect(
                     color = Color(0xFFF86622),
                     topLeft = Offset((innerRectOffsetX + i * partWidth),innerRectOffsetY),
@@ -156,18 +156,20 @@ fun BatterySkinZero(currentPage: Int, intervalMinutes: MutableState<Int>,
                 )
             }
             drawIntoCanvas { canvas->
-                canvas.nativeCanvas.drawText(
-                    chargingPercentage.toInt().toString(),
-                    canvasWidth / 2,
-                    (canvasHeight + rectHeight + 60.dp.toPx()) / 2,
-                    Paint().asFrameworkPaint().apply {
-                        color = currentColor.toArgb()
-                        textSize = 36.sp.toPx()
-                        textAlign = android.graphics.Paint.Align.CENTER
-                        isAntiAlias = true
-                        typeface = customFont
-                    }
-                )
+                if (chargingPercentage != null) {
+                    canvas.nativeCanvas.drawText(
+                        chargingPercentage.toInt().toString(),
+                        canvasWidth / 2,
+                        (canvasHeight + rectHeight + 60.dp.toPx()) / 2,
+                        Paint().asFrameworkPaint().apply {
+                            color = currentColor.toArgb()
+                            textSize = 36.sp.toPx()
+                            textAlign = android.graphics.Paint.Align.CENTER
+                            isAntiAlias = true
+                            typeface = customFont
+                        }
+                    )
+                }
             }
         }
         if(pageSelected){
