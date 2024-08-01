@@ -1,9 +1,14 @@
 package com.arush.standbydroid.view
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,8 +27,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +47,9 @@ import com.arush.standbydroid.ui.theme.StandByDroidTheme
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var lockScreenReceiver: BroadcastReceiver
+    private var isLockedState = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,11 +65,37 @@ class MainActivity : ComponentActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+
         setContent {
             StandByDroidTheme {
-                HomeScreen(toggleFullScreen = { toggleFullScreen() })
+                HomeScreen(
+                    toggleFullScreen = { toggleFullScreen() },
+                    isLockedScreen = isLockedState,
+                    screenLockCallback = {
+                        isLockedState.value = true
+                        Toast.makeText(this@MainActivity, "Screen Locked. Press any volume button to unlock screen", Toast.LENGTH_LONG).show()
+                    }
+                )
             }
         }
+
+        lockScreenReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent?.action == "android.media.VOLUME_CHANGED_ACTION") {
+                    runOnUiThread {
+                        if(isLockedState.value){
+                            Toast.makeText(this@MainActivity, "Screen Unlocked", Toast.LENGTH_SHORT).show()
+                            isLockedState.value = false
+                        }
+                    }
+                }
+            }
+        }
+
+        val filter = IntentFilter().apply {
+            addAction("android.media.VOLUME_CHANGED_ACTION")
+        }
+        registerReceiver(lockScreenReceiver, filter)
     }
 
     private fun toggleFullScreen() {
@@ -72,10 +108,15 @@ class MainActivity : ComponentActivity() {
             insetsController.hide(WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.navigationBars())
         }, 2000) // 2 seconds
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(lockScreenReceiver)
+    }
 }
 
 @Composable
-fun HomeScreen(toggleFullScreen : () -> Unit){
+fun HomeScreen(toggleFullScreen : () -> Unit, screenLockCallback : ()->Unit, isLockedScreen : MutableState<Boolean>){
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
     val context = LocalContext.current
@@ -88,26 +129,29 @@ fun HomeScreen(toggleFullScreen : () -> Unit){
         }
     }
 
-    MainScreenLayout(orientation ,toggleFullScreen)
+    MainScreenLayout(orientation ,toggleFullScreen, screenLockCallback, isLockedScreen)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun MainScreenLayout(orientation: Int, toggleFullScreen : () -> Unit) {
+private fun MainScreenLayout(orientation: Int, toggleFullScreen : () -> Unit, screenLockCallback : ()->Unit, isLockedScreen : MutableState<Boolean>) {
     val pagerState = rememberPagerState (initialPage = 1)  { 2 }
 
     Column(Modifier.fillMaxSize()) {
-        HorizontalPager(state = pagerState) {currentPage ->
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = !isLockedScreen.value
+        ) {currentPage ->
             when (currentPage) {
                 0 -> SettingScreen()
-                1 -> RenderScreenOneLandscape(orientation, toggleFullScreen)
+                1 -> RenderScreenOneLandscape(orientation, toggleFullScreen, screenLockCallback, isLockedScreen)
             }
         }
     }
 }
 
 @Composable
-private fun RenderScreenOneLandscape(orientation: Int, toggleFullScreen : () -> Unit) {
+private fun RenderScreenOneLandscape(orientation: Int, toggleFullScreen : () -> Unit, screenLockCallback : ()->Unit, isLockedScreen : MutableState<Boolean>) {
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -116,7 +160,7 @@ private fun RenderScreenOneLandscape(orientation: Int, toggleFullScreen : () -> 
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Ensuring each component takes up equal space in the Row
-        RenderClock(orientation, toggleFullScreen, Modifier.weight(1.3f))
-        RenderBattery(orientation, toggleFullScreen, Modifier.weight(1f))
+        RenderClock(orientation, toggleFullScreen, Modifier.weight(1.3f), screenLockCallback, isLockedScreen)
+        RenderBattery(orientation, toggleFullScreen, Modifier.weight(1f), screenLockCallback, isLockedScreen)
     }
 }

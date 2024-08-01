@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -161,6 +162,22 @@ fun BatterySkinOne(intervalMinutes: MutableState<Int>,
                     colors = ButtonDefaults.buttonColors(containerColor = currentColor)
                 ) {
                     Icon(imageVector = Icons.Default.Done, contentDescription = "Done")
+                }
+            }
+        }
+        else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Button(onClick = {
+                    callBack()
+                },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Icon(imageVector = Icons.Default.Lock, contentDescription = "Done", tint = currentColor)
                 }
             }
         }

@@ -40,7 +40,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier){
+fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier, screenLockCallback : ()->Unit, isLockedScreen : MutableState<Boolean>){
     val context = LocalContext.current
     var isBatterySwitchChecked by remember { mutableStateOf(UserPreferenceManager.getBatteryAccess(context)) }
     var batteryStatus by remember { mutableStateOf<Intent?>(null) }
@@ -48,7 +48,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
     var isCharging by remember { mutableStateOf(false) }
     var batteryPct by remember { mutableStateOf<Float?>(100f) }
     val currentSkinIndex = remember { mutableIntStateOf(UserPreferenceManager.getBatterySkin(context)) }
-    var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 10 }
+    var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 2 }
     var pageSelected by remember { mutableStateOf(false) }
 
     DisposableEffect(isBatterySwitchChecked) {
@@ -86,7 +86,9 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
                 modifier = Modifier.fillMaxSize(0.9f),
                 shape = RoundedCornerShape(30.dp)
             ) {
-                VerticalPager(state = pagerState) { currentPage ->
+                VerticalPager(
+                    state = pagerState
+                ) { currentPage ->
                     displaySkin(
                         currentPage = pagerState.currentPage,
                         intervalMinutes = intervalMinutes,
@@ -107,11 +109,14 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
             modifier = modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
-                    detectTapGestures(onLongPress = {
-                        pageSelected = true
-                    }, onDoubleTap = {
-                        toggleFullScreen()
-                    })
+                    detectTapGestures(
+                        onLongPress = {
+                            if(!isLockedScreen.value) pageSelected = true
+                        },
+                        onDoubleTap = {
+                            toggleFullScreen()
+                        }
+                    )
                 }
         ) {
             displaySkin(
@@ -121,7 +126,9 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
                 chargingPercentage = batteryPct,
                 orientation = orientation,
                 pageSelected = pageSelected,
-                callBack = {}
+                callBack = {
+                    screenLockCallback()
+                }
             )
         }
     }

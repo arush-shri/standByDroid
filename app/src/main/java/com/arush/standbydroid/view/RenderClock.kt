@@ -1,11 +1,13 @@
 package com.arush.standbydroid.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,7 +59,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier){
+fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modifier = Modifier, screenLockCallback : ()->Unit, isLockedScreen : MutableState<Boolean>){
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -78,17 +80,11 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modif
         }
     }
 
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.currentPage }
-//            .collect { pageIndex ->
-//                UserPreferenceManager.saveClockSkin(context, pageIndex)
-//            }
-//    }
-
     if (pageSelected) {
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .padding(vertical = 5.dp)
                 .background(Color(0xFF5D5985)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -116,12 +112,16 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modif
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .padding(vertical = 5.dp)
                 .pointerInput(Unit) {
-                    detectTapGestures(onLongPress = {
-                        pageSelected = true
-                    }, onDoubleTap = {
-                        toggleFullScreen()
-                    })
+                    detectTapGestures(
+                        onLongPress = {
+                            if(!isLockedScreen.value) pageSelected = true
+                        },
+                        onDoubleTap = {
+                            toggleFullScreen()
+                        }
+                    )
                 }
         ) {
             DisplaySkin(
@@ -130,7 +130,9 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modif
                 intervalMinutes = intervalMinutes,
                 orientation = orientation,
                 pageSelected = pageSelected,
-                callBack = {}
+                callBack = {
+                    screenLockCallback()
+                }
             )
         }
     }
