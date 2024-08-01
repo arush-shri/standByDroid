@@ -13,6 +13,7 @@ object UserPreferenceManager {
     private const val KEY_BATTERY_SKIN = "key_battery_skin"
     private const val KEY_COLOR_CHANGE_TIME = "key_color_change_time"
     private const val KEY_SHOW_ON_CHARGING = "key_show_on_charging"
+    private const val KEY_START_LANDSCAPE = "key_start_landscape"
 
     private fun getPreferences(context: Context): SharedPreferences {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -88,5 +89,14 @@ object UserPreferenceManager {
     }
     fun getBatterySkin(context: Context): Int {
         return getPreferences(context).getInt(KEY_BATTERY_SKIN, 0)
+    }
+
+    fun saveStartLandscapeMode(context: Context, isEnabled: Boolean) {
+        val editor = getPreferences(context).edit()
+        editor.putBoolean(KEY_START_LANDSCAPE, isEnabled)
+        editor.apply()
+    }
+    fun getStartLandscapeMode(context: Context): Boolean {
+        return getPreferences(context).getBoolean(KEY_START_LANDSCAPE, true)
     }
 }

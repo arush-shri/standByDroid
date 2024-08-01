@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
@@ -43,6 +44,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.arush.standbydroid.UserPreferenceManager
 import com.arush.standbydroid.ui.theme.StandByDroidTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,6 +56,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        val orientationPreference = UserPreferenceManager.getStartLandscapeMode(applicationContext)
+
+        requestedOrientation = if(orientationPreference){
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else{
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+
         insetsController.apply {
             hide(WindowInsetsCompat.Type.statusBars())
             hide(WindowInsetsCompat.Type.navigationBars())
@@ -73,7 +83,7 @@ class MainActivity : ComponentActivity() {
                     isLockedScreen = isLockedState,
                     screenLockCallback = {
                         isLockedState.value = true
-                        Toast.makeText(this@MainActivity, "Screen Locked. Press any volume button to unlock screen", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, "Screen Locked. Press volume key to unlock", Toast.LENGTH_LONG).show()
                     }
                 )
             }

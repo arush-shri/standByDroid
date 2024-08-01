@@ -1,6 +1,7 @@
 package com.arush.standbydroid.view
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ private fun BehaviourScreenView(orientation: Int){
     var colorChangeTime by remember { mutableIntStateOf(UserPreferenceManager.getColorChangeTime(context)) }
     var isShowOnChargingSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getShowOnChargingPreference(context)) }
     var sliderPosition by remember { mutableFloatStateOf((colorChangeTime - 5) / (60f - 5f)) }
+    var isStartLandscapeSwitchChecked by remember { mutableStateOf(UserPreferenceManager.getStartLandscapeMode(context)) }
 
     Column(
         modifier = Modifier
@@ -138,6 +140,53 @@ private fun BehaviourScreenView(orientation: Int){
                         isShowOnChargingSwitchChecked = false
                         UserPreferenceManager.saveShowOnChargingPreference(context, false)
                     }
+                }
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 15.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.then(
+                    if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        Modifier
+                    }
+                    else{
+                        Modifier.fillMaxWidth(0.8f)
+                    }
+                )
+            ) {
+                Text(
+                    text = "Use app in landscape mode",
+                    style = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    color = Color.White
+                )
+                Text(
+                    text = "Turn on to use app in landscape mode. If off then app uses device orientation",
+                    style = TextStyle(
+                        fontSize = 14.sp
+                    ),
+                    color = Color(0xFF586F81)
+                )
+            }
+
+            Switch(
+                checked = isStartLandscapeSwitchChecked,
+                onCheckedChange = { isChecked ->
+                    if (isChecked) {
+                        isStartLandscapeSwitchChecked = true
+                        UserPreferenceManager.saveStartLandscapeMode(context, true)
+                    } else {
+                        isStartLandscapeSwitchChecked = false
+                        UserPreferenceManager.saveStartLandscapeMode(context, false)
+                    }
+                    Toast.makeText(context, "Restart the app to see changes", Toast.LENGTH_SHORT).show()
                 }
             )
         }

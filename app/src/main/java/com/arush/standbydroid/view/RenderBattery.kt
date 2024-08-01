@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.arush.standbydroid.UserPreferenceManager
 import com.arush.standbydroid.customComponents.batterySkins.BatterySkinOne
+import com.arush.standbydroid.customComponents.batterySkins.BatterySkinTwo
 import com.arush.standbydroid.customComponents.batterySkins.BatterySkinZero
 import com.arush.standbydroid.listeners.PowerConnectionReceiver
 import com.arush.standbydroid.listeners.getBatteryPercent
@@ -48,7 +49,7 @@ fun RenderBattery(orientation: Int, toggleFullScreen : () -> Unit, modifier: Mod
     var isCharging by remember { mutableStateOf(false) }
     var batteryPct by remember { mutableStateOf<Float?>(100f) }
     val currentSkinIndex = remember { mutableIntStateOf(UserPreferenceManager.getBatterySkin(context)) }
-    var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 2 }
+    var pagerState = rememberPagerState (initialPage = currentSkinIndex.intValue)  { 3 }
     var pageSelected by remember { mutableStateOf(false) }
 
     DisposableEffect(isBatterySwitchChecked) {
@@ -139,6 +140,7 @@ private fun displaySkin(currentPage: Int, intervalMinutes: MutableState<Int>, ch
     when(currentPage){
         0 -> BatterySkinZero(intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
         1 -> BatterySkinOne(intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
+        2 -> BatterySkinTwo(intervalMinutes = intervalMinutes, chargingStatus = chargingStatus, chargingPercentage = chargingPercentage, orientation = orientation, pageSelected = pageSelected, callBack = callBack)
     }
 }
 

@@ -112,7 +112,7 @@ fun RenderClock(orientation: Int, toggleFullScreen : () -> Unit, modifier: Modif
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(vertical = 5.dp)
+                .padding(vertical = 5.dp, horizontal = 25.dp)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onLongPress = {
