@@ -1,8 +1,15 @@
+import { View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 
-const Controller = () => {}
+export const Controller = () => {
+    return(
+        <View style={styles.container}></View>
+    )
+}
 
 const styles = StyleSheet.create({
-    
+    container: {
+        flex: 1,
+        backgroundColor: 'red'
+    },
 })
-export default Controller;

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { scale, StyleSheet } from "react-native-size-scaling";
+import SelectorView from "../components/SelectorView";
 import EventsEmitter from "./context/EventsEmitter";
 
 const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
@@ -60,6 +61,21 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
         }, 
     [setBox]);
 
+    const saveBoxView = useCallback(
+        async (val) => {
+            try {
+                const updated = {
+                    ...box,
+                    viewShow: val
+                };
+                setBox(updated)
+                await AsyncStorage.setItem(storeKey, JSON.stringify(updated));
+            } catch (e) {
+                console.log("Save box error", e);
+            }
+        }, 
+    [setBox, box]);
+
     // PanResponder for dragging
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
@@ -106,10 +122,8 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 
     return (
         <>
-            <Pressable
+            <View
                 key={box.id}
-                onLongPress={startEditing}
-                delayLongPress={300}
                 style={[
                     styles.box,
                     {
@@ -123,7 +137,6 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
                     },
                 ]}
             >
-                {/* Resize Handle */}
                 { isEditing && 
                     <View
                     {...resizeResponder.panHandlers}
@@ -159,7 +172,9 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
                         <Trash size={scale(18)} color={'rgba(0,0,0,0.5)'} />
                     </Pressable>
                 }
-            </Pressable>
+                <SelectorView startEditing={startEditing} viewSelected={box.viewShow || 'empty'}
+                    isEditing={isEditing} viewChange={saveBoxView} />
+            </View>
             {
                 isEditing &&
                 <Pressable onPress={addBox} style={styles.addMore} >
@@ -275,7 +290,8 @@ export default function Main() {
             w: boxWidth,
             h: boxHeight,
             color: "limegreen",
-            storeKey: `boxPos_${id}`
+            storeKey: `boxPos_${id}`,
+            viewShow: 'empty'
         };
 
         setBoxes((prev) => {

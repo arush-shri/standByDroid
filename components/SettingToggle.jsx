@@ -10,7 +10,6 @@ const SettingToggle = ({ label, valChange, storeKey, desc }) => {
     useEffect(() => {
         const getVal = async() => {
             const val = await AsyncStorage.getItem(storeKey);
-            console.log(val)
             setValue(val === "true");
         }
         getVal();
@@ -71,5 +70,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#6caf91ff'
     }
-})
+});
+
 export default SettingToggle;
