@@ -26,37 +26,37 @@ const ViewPicker = ({visible, closeModal, setValue}) => {
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_1')}}>
-                        <Text style={styles.text}>View 1</Text>
+                        <Text style={styles.text}>Clock Display</Text>
                     </Pressable>
                     
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_2')}}>
-                        <Text style={styles.text}>View 2</Text>
+                        <Text style={styles.text}>Battery Info</Text>
                     </Pressable>
                     
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_3')}}>
-                        <Text style={styles.text}>View 3</Text>
+                        <Text style={styles.text}>Calendar</Text>
                     </Pressable>
                     
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_4')}}>
-                        <Text style={styles.text}>View 4</Text>
+                        <Text style={styles.text}>Music Control</Text>
                     </Pressable>
                     
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_5')}}>
-                        <Text style={styles.text}>View 5</Text>
+                        <Text style={styles.text}>Notifications</Text>
                     </Pressable>
                     
                     <Pressable
                     style={styles.buttons}
                     onPress={() => {selecteView('view_6')}}>
-                        <Text style={styles.text}>View 6</Text>
+                        <Text style={styles.text}>To Do List</Text>
                     </Pressable>
                 </ScrollView>
             </Pressable>
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: 'rgba(255,255,255,0.8)',
-        fontSize: 20
+        fontSize: 19,
+        fontFamily: 'bo2',
     },
     scrollContainer: {
         justifyContent: "center", 
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     },
     scroller: {
         flex: 1, 
-        width: '50%', 
+        minWidth: '50%', 
         height: '100%',
     }
 });

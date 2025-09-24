@@ -38,7 +38,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 
     useEffect(() => {
         listenerRef.current = (editingBoxId) => {
-            if (editingBoxId !== box.id && isEditing) {
+            if (editingBoxId === 'rootClick' || (editingBoxId !== box.id && isEditing)) {
                 setIsEditing(false);
             }
         };
@@ -311,14 +311,19 @@ export default function Main() {
 
     return (
         <GestureHandlerRootView style={styles.container}>
-            {boxes?.map((box, index) => <RenderBox boxObj={box} storeKey={box.storeKey} key={index} 
+            <Pressable
+            onPress={() => EventsEmitter.emit('editingStarted', 'rootClick')}
+            style={{flex: 1}}
+            >
+                {boxes?.map((box, index) => <RenderBox boxObj={box} storeKey={box.storeKey} key={index} 
                 addBox={addBoxAtCenter} deleteBox={deleteBox} />)}
-            {
-                (boxes.length === 0) &&
-                <Pressable onPress={addBoxAtCenter} style={styles.addMore} >
-                    <Plus size={scale(25)} color={'rgba(0,0,0,0.5)'} style={{alignSelf: 'center'}} />
-                </Pressable>
-            }
+                {
+                    (boxes.length === 0) &&
+                    <Pressable onPress={addBoxAtCenter} style={styles.addMore} >
+                        <Plus size={scale(25)} color={'rgba(0,0,0,0.5)'} style={{alignSelf: 'center'}} />
+                    </Pressable>
+                }
+            </Pressable>
         </GestureHandlerRootView>
     );
 }
@@ -337,7 +342,8 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255,255,255,0.8)",
         position: "absolute",
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 9999
     },
     addMore: {
         backgroundColor: "rgba(255,255,255,0.8)",
