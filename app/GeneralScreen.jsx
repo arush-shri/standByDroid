@@ -1,9 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Brightness from 'expo-brightness';
 import { ScrollView } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import SettingSlider from "../components/SettingSlider";
+import { useUserPreferences } from './context/UserPreference';
 
 const GeneralScreen = () => {
+    const { setUserPref } = useUserPreferences();
+
     return (
         <ScrollView 
         showsVerticalScrollIndicator={false}
@@ -23,7 +27,10 @@ const GeneralScreen = () => {
                 label={'Color Randomness'}
                 minValue={5}
                 maxValue={60}
-                valChange={(val) => {}}
+                valChange={(val) => {
+                    AsyncStorage.setItem('randomTime', val.toString());
+                    setUserPref(prev => ({...prev, Randomness: Number(val * 1000 * 60)}));
+                }}
                 desc = {'Duration in minutes to change colors randomly'}
                 storeKey = {'Randomness'}
             />

@@ -33,12 +33,12 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 
     const startEditing = () => {
         setIsEditing(true);
-        EventsEmitter.emit('editingStarted', box.id); // Pass the id
+        EventsEmitter.emit('editingStarted', box?.id); // Pass the id
     };
 
     useEffect(() => {
         listenerRef.current = (editingBoxId) => {
-            if (editingBoxId === 'rootClick' || (editingBoxId !== box.id && isEditing)) {
+            if (editingBoxId === 'rootClick' || (editingBoxId !== box?.id && isEditing)) {
                 setIsEditing(false);
             }
         };
@@ -47,7 +47,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
         return () => {
             EventsEmitter.off('editingStarted', listenerRef.current);
         };
-    }, [box.id, isEditing]);
+    }, [box?.id, isEditing]);
 
     // Save to storage
     const saveBox = useCallback(
@@ -66,7 +66,8 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
             try {
                 const updated = {
                     ...box,
-                    viewShow: val
+                    viewShow: val,
+                    selected: 'one'
                 };
                 setBox(updated)
                 await AsyncStorage.setItem(storeKey, JSON.stringify(updated));
@@ -173,7 +174,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
                     </Pressable>
                 }
                 <SelectorView startEditing={startEditing} viewSelected={box.viewShow || 'empty'}
-                    isEditing={isEditing} viewChange={saveBoxView} />
+                    isEditing={isEditing} viewChange={saveBoxView} storeKey={storeKey} viewface={box.selected || 'one'} />
             </View>
             {
                 isEditing &&
@@ -291,7 +292,8 @@ export default function Main() {
             h: boxHeight,
             color: "limegreen",
             storeKey: `boxPos_${id}`,
-            viewShow: 'empty'
+            viewShow: 'empty',
+            selected: 'one'
         };
 
         setBoxes((prev) => {

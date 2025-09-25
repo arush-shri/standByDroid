@@ -29,6 +29,7 @@ export const PreferenceProvider = ({ children }) => {
             const pref = await AsyncStorage.getItem('Brightness');
             if(pref){
                 Brightness.setBrightnessAsync(Number(Number(pref)/100))
+                setUserPref(prev => ({...prev, Brightness: Number(Number(pref)/100)}));
             } 
         }
         if(Platform.OS === 'android'){
@@ -39,17 +40,23 @@ export const PreferenceProvider = ({ children }) => {
         }
     }
 
+    const getOtherData = async() => {
+        const randomTime = await AsyncStorage.getItem('randomTime') || '5'
+        setUserPref(prev => ({...prev, Randomness: Number(Number(randomTime) * 1000 * 60)}));
+    }
+
     useEffect(() => {
         getOrientation();
         getBrightness();
+        getOtherData();
     }, []);
 
-    const contextValue = { userPref };
+    const contextValue = { userPref, setUserPref };
     
     return <Preference.Provider value={contextValue}>{children}</Preference.Provider>;
 };
 
-export const UserPrefrences = () => useContext(Preference);
+export const useUserPreferences = () => useContext(Preference);
 
 export const StorePref = ( key, value ) => {
     if(!key || !value) return;

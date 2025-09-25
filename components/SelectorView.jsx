@@ -10,7 +10,7 @@ import ViewPicker from "../components/Modals/ViewPicker";
 
 const TAP_DELAY = 200;
 
-const SelectorView = ({ isEditing, startEditing, viewChange, viewSelected }) => {
+const SelectorView = ({ isEditing, startEditing, viewChange, viewSelected, storeKey, viewface }) => {
     const [openSelector, setOpenSelector] = useState(false)
     const selectedView = useRef(viewSelected);
     const tapCount = useRef(0);
@@ -45,7 +45,7 @@ const SelectorView = ({ isEditing, startEditing, viewChange, viewSelected }) => 
         delayLongPress={300}
         onPress={handleTap} 
         style={styles.selectorOverlay}>
-            <RenderView ref={renderViewRef} view={selectedView.current} />
+            <RenderView ref={renderViewRef} view={selectedView.current} storeKey={storeKey} viewface={viewface} />
             <ViewPicker
             visible={openSelector}
             closeModal={() => setOpenSelector(false)}
@@ -57,7 +57,7 @@ const SelectorView = ({ isEditing, startEditing, viewChange, viewSelected }) => 
     );
 };
 
-const RenderView = forwardRef(({ view }, ref) => {
+const RenderView = forwardRef(({ view, storeKey, viewface }, ref) => {
     const controllerRef = useRef(null);
     useImperativeHandle(ref, () => ({
         handleTripleTap: () => {
@@ -66,22 +66,22 @@ const RenderView = forwardRef(({ view }, ref) => {
     }));
 
     if(view === 'view_1'){
-        return <ClockController ref={controllerRef} />
+        return <ClockController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'view_2'){
-        return <BatteryController ref={controllerRef} />
+        return <BatteryController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'view_3'){
-        return <CalendarController ref={controllerRef} />
+        return <CalendarController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'view_4'){
-        return <MusicController ref={controllerRef} />
+        return <MusicController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'view_5'){
-        return <NotificationController ref={controllerRef} />
+        return <NotificationController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'view_6'){
-        return <TodoListController ref={controllerRef} />
+        return <TodoListController ref={controllerRef} storeKey={storeKey} viewface={viewface} />
     }
     if(view === 'empty'){
         return <EmptyView />
