@@ -11,9 +11,9 @@ const FacesMap = {
     'two': Two
 };
 
-export const Controller = forwardRef(( { storeKey }, ref ) => {
+export const Controller = forwardRef(( { storeKey, viewface }, ref ) => {
     const [selector, setSelector] = useState(false);
-    const [selectedFace, setSelectedFace] = useState('one');
+    const [selectedFace, setSelectedFace] = useState(viewface);
     const FaceComponent = FacesMap[selectedFace];
 
     const changeFace = useCallback(
@@ -66,30 +66,14 @@ const SelectionView = ({ changeFace }) => {
         setContainerWidth(width);
     };
 
-    const RenderItem = ({ item }) => {
-        const FaceComponent = FacesMap[item];
-        return (
-            <Pressable
-                style={{
-                    width: containerWidth,
-                    height: containerHeight,
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-                onPress={() => changeFace(item)}
-            >
-                <FaceComponent />
-            </Pressable>
-        );
-    };
-
     return (
         <View style={{ flex: 1 }} onLayout={onLayout}>
             {containerHeight > 0 && (
                 <FlatList
                     data={faceKeys}
                     keyExtractor={(item) => item}
-                    renderItem={({ item }) => <RenderItem item={item} />}
+                    renderItem={({ item }) => <RenderItem item={item} changeFace={changeFace} 
+                        containerWidth={containerWidth} containerHeight={containerHeight} />}
                     pagingEnabled
                     showsVerticalScrollIndicator={false}
                     horizontal={false} // vertical scroll
@@ -106,9 +90,29 @@ const SelectionView = ({ changeFace }) => {
     );
 };
 
+const RenderItem = ({ item, changeFace, containerWidth, containerHeight }) => {
+    const FaceComponent = FacesMap[item];
+    return (
+        <Pressable
+            style={{
+                flex: 1,
+                width: containerWidth,
+                height: containerHeight, 
+                paddingHorizontal: containerWidth / 6,
+                paddingVertical: containerHeight / 6,
+            }}
+            onPress={() => changeFace(item)}
+        >
+            <FaceComponent />
+        </Pressable>
+    );
+};
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#1b1b1bff'
     },
     selectorContainer: {
         flex: 1
