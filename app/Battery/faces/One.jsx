@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 
-const One = ({  }) => {
+const One = ({ info }) => {
     return(
         <View style={styles.contatiner}>
             <Text style={{fontSize: 18, color: 'red'}}>ONEEEEEEEEEEEEEEEEEEE</Text>

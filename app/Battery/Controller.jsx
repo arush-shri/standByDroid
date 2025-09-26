@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
+import * as Battery from 'expo-battery';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import { ToastMaker } from "../../components/ToastMaker";
+import { GetBatteryFlow } from "../context/BatteryInfo";
 import One from "./faces/One";
 import Two from "./faces/Two";
 
@@ -15,6 +17,67 @@ export const Controller = forwardRef(( { storeKey, viewface }, ref ) => {
     const [selector, setSelector] = useState(false);
     const [selectedFace, setSelectedFace] = useState(viewface);
     const FaceComponent = FacesMap[selectedFace];
+    const [batteryInfo, setBatteryInfo] = useState({
+        isCharging: false,
+        batteryPercent: 0,
+        wattage: 0, // in W
+        voltage: 0, // optional
+        current: 0, // optional
+    });
+    let wattageInterval;
+
+    useEffect(() => {
+        const fetchBatteryInfo = async () => {
+            const batteryState = await Battery.getBatteryStateAsync();
+            const batteryLevel = await Battery.getBatteryLevelAsync();
+            const isCharging =
+                batteryState === Battery.BatteryState.CHARGING ||
+                batteryState === Battery.BatteryState.FULL;
+            const { voltage, current, wattage } = await GetBatteryFlow();
+
+            setBatteryInfo({
+                isCharging,
+                batteryPercent: Math.round(batteryLevel * 100),
+                wattage,
+                voltage,
+                current,
+            });
+        };
+
+        fetchBatteryInfo();
+
+        const chargingListener = Battery.addBatteryStateListener(({ batteryState }) => {
+            setBatteryInfo(prev => ({
+                ...prev,
+                isCharging:
+                    batteryState === Battery.BatteryState.CHARGING ||
+                    batteryState === Battery.BatteryState.FULL,
+            }));
+        });
+
+        const levelListener = Battery.addBatteryLevelListener(({ batteryLevel }) => {
+            setBatteryInfo(prev => ({
+                ...prev,
+                batteryPercent: Math.round(batteryLevel * 100),
+            }));
+        });
+
+        wattageInterval = setInterval(async () => {
+            const { voltage, current, wattage } = await GetBatteryFlow();
+            setBatteryInfo(prev => ({
+                ...prev,
+                wattage,
+                voltage,
+                current,
+            }));
+        }, 1000);
+
+        return () => {
+            chargingListener.remove();
+            levelListener.remove();
+            clearInterval(wattageInterval);
+        };
+    }, []);
 
     const changeFace = useCallback(
         async (val) => {
@@ -47,15 +110,15 @@ export const Controller = forwardRef(( { storeKey, viewface }, ref ) => {
     return(
         <View style={styles.container}>
             {selector ? (
-                <SelectionView changeFace={changeFace} />
+                <SelectionView changeFace={changeFace} info={batteryInfo} />
             ) : (
-                FaceComponent ? <FaceComponent /> : null
+                FaceComponent ? <FaceComponent info={batteryInfo} /> : null
             )}
         </View>
     )
 });
 
-const SelectionView = ({ changeFace }) => {
+const SelectionView = ({ changeFace, info }) => {
     const faceKeys = Object.keys(FacesMap);
     const [containerHeight, setContainerHeight] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
@@ -72,7 +135,7 @@ const SelectionView = ({ changeFace }) => {
                 <FlatList
                     data={faceKeys}
                     keyExtractor={(item) => item}
-                    renderItem={({ item }) => <RenderItem item={item} changeFace={changeFace} 
+                    renderItem={({ item }) => <RenderItem item={item} changeFace={changeFace} info={info}
                         containerWidth={containerWidth} containerHeight={containerHeight} />}
                     pagingEnabled
                     showsVerticalScrollIndicator={false}
@@ -90,7 +153,7 @@ const SelectionView = ({ changeFace }) => {
     );
 };
 
-const RenderItem = ({ item, changeFace, containerWidth, containerHeight }) => {
+const RenderItem = ({ item, changeFace, containerWidth, containerHeight, info }) => {
     const FaceComponent = FacesMap[item];
     return (
         <Pressable
@@ -103,7 +166,7 @@ const RenderItem = ({ item, changeFace, containerWidth, containerHeight }) => {
             }}
             onPress={() => changeFace(item)}
         >
-            <FaceComponent />
+            <FaceComponent info={info} />
         </Pressable>
     );
 };
