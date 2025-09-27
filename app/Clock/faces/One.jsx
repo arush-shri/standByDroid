@@ -1,24 +1,76 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Text } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
+import { GetRandomColor } from "../../context/Randomizer";
+import { useUserPreferences } from "../../context/UserPreference";
 
 const One = memo(({ time }) => {
+    const { userPref } = useUserPreferences();
+    const formattedTime = time.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+    const [hourMinute, ampm] = formattedTime.split("\u202F");
+    const [color, setColor] = useState('#4582C0');
+    const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const randColor = GetRandomColor();
+            setColor(randColor)
+        }, userPref?.Randomness || 300000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
-        <DriftingView>
-            <Text style={styles.text}>{time.toLocaleTimeString()}</Text>
+        <DriftingView 
+            onLayout={(e) => {
+                const { width, height } = e.nativeEvent.layout;
+                setBoxSize({ width, height });
+            }}
+            styling={styles.container}>
+            <Text
+                style={[
+                    styles.hourMinute,
+                    {
+                        color: color,
+                        fontSize: boxSize.width * 0.38,
+                    },
+                ]}
+            >
+                {hourMinute}
+            </Text>
+            <Text
+                style={[
+                    styles.ampm,
+                    {
+                        color: color,
+                        fontSize: boxSize.width * 0.14,
+                    },
+                ]}
+            >
+                {ampm?.toUpperCase()}
+            </Text>
         </DriftingView>
     );
 });
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: "#000",
+        flexDirection: 'row',
+        alignItems: 'flex-end'
     },
-    text: {
-        fontSize: 18,
-        color: "red",
+    hourMinute: {
+        fontSize: 90,
+        fontFamily: 'transformers'
+    },
+    ampm: {
+        fontSize: 25,
+        marginLeft: 8,
+        fontFamily: 'transformers'
     },
 });
 

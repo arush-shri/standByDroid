@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, View } from "react-native";
+import { Animated, ImageBackground, View } from "react-native";
 import { scale } from "react-native-size-scaling";
 import { useUserPreferences } from "../app/context/UserPreference";
 
-const DriftingView = ({ children, padding = scale(30) }) => {
+const DriftingView = ({ children, padding = scale(30), backgroundImage, styling, onLayout }) => {
     const { userPref } = useUserPreferences();
     const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
     const [childSize, setChildSize] = useState({ width: 0, height: 0 });
@@ -38,17 +38,23 @@ const DriftingView = ({ children, padding = scale(30) }) => {
 
         return () => clearInterval(id);
     }, [boxSize, childSize, position, userPref, padding]);
+    const Container = backgroundImage ? ImageBackground : View;
+    const containerProps = backgroundImage
+        ? { source: backgroundImage, style: { flex: 1 } }
+        : { };
 
     return (
-        <View
+        <Container
+            {...containerProps}
             style={{ flex: 1, backgroundColor: "#000" }}
             onLayout={(e) => {
                 const { width, height } = e.nativeEvent.layout;
                 setBoxSize({ width, height });
+                if(onLayout) onLayout(e)
             }}
         >
             <Animated.View
-                style={{ transform: position.getTranslateTransform(), alignSelf: "flex-start" }}
+                style={[{ transform: position.getTranslateTransform(), alignSelf: "flex-start" }, styling]}
                 onLayout={(e) => {
                     const { width, height } = e.nativeEvent.layout;
                     setChildSize({ width, height });
@@ -56,7 +62,7 @@ const DriftingView = ({ children, padding = scale(30) }) => {
             >
                 {children}
             </Animated.View>
-        </View>
+        </Container>
     );
 };
 
