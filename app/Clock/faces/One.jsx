@@ -24,7 +24,7 @@ const One = memo(({ time }) => {
 
         return () => clearInterval(interval);
     }, []);
-
+    
     return (
         <DriftingView 
             onLayout={(e) => {
@@ -37,7 +37,7 @@ const One = memo(({ time }) => {
                     styles.hourMinute,
                     {
                         color: color,
-                        fontSize: boxSize.width * 0.38,
+                        fontSize: Math.min(boxSize.width * 0.30, boxSize.height * 0.8),
                     },
                 ]}
             >
@@ -48,7 +48,7 @@ const One = memo(({ time }) => {
                     styles.ampm,
                     {
                         color: color,
-                        fontSize: boxSize.width * 0.14,
+                        fontSize: Math.min(boxSize.width * 0.15, boxSize.height * 0.4),
                     },
                 ]}
             >
@@ -61,7 +61,7 @@ const One = memo(({ time }) => {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
     },
     hourMinute: {
         fontSize: 90,

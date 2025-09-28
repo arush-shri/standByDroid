@@ -24,8 +24,8 @@ const DriftingView = ({ children, padding = scale(30), backgroundImage, styling,
         if (!boxSize.width || !boxSize.height || !childSize.width || !childSize.height) return;
 
         const id = setInterval(() => {
-            const maxX = Math.max(0 + padding, boxSize.width - childSize.width - padding);
-            const maxY = Math.max(0 + padding, boxSize.height - childSize.height - padding);
+            const maxX = Math.max(0, boxSize.width - childSize.width - padding);
+            const maxY = Math.max(0, boxSize.height - childSize.height - padding);
 
             const offsetX = Math.random() * maxX;
             const offsetY = Math.random() * maxY;

@@ -179,7 +179,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
             {
                 isEditing &&
                 <Pressable onPress={addBox} style={styles.addMore} >
-                    <Plus size={scale(25)} color={'rgba(0,0,0,0.5)'} style={{alignSelf: 'center'}} />
+                    <Plus size={scale(40)} color={'#000'} style={{alignSelf: 'center'}} />
                 </Pressable>
             }
         </>
@@ -339,8 +339,8 @@ const styles = StyleSheet.create({
         position: "absolute",
     },
     resizeHandle: {
-        width: 24,
-        height: 24,
+        width: 35,
+        height: 35,
         backgroundColor: "rgba(255,255,255,0.8)",
         position: "absolute",
         justifyContent: 'center',
@@ -348,13 +348,12 @@ const styles = StyleSheet.create({
         zIndex: 9999
     },
     addMore: {
-        backgroundColor: "rgba(255,255,255,0.8)",
+        backgroundColor: "rgba(25, 167, 233, 1)",
         marginLeft: 8,
-        position: "relative",
-        top: 10,
-        left: 10,
-        width: 30,
-        height: 30,
-        justifyContent: 'center'
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        top: '45%'
     }
 });
