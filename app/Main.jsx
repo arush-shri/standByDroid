@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Check, Move, MoveDiagonal2, Plus, Trash } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+    Modal,
     PanResponder,
     Pressable,
     useWindowDimensions,
@@ -9,7 +10,9 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { scale, StyleSheet } from "react-native-size-scaling";
+import { VolumeManager } from 'react-native-volume-manager';
 import SelectorView from "../components/SelectorView";
+import { ToastMaker } from "../components/ToastMaker";
 import EventsEmitter from "./context/EventsEmitter";
 
 const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
@@ -189,64 +192,28 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 export default function Main() {
     const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
     const [boxes, setBoxes] = useState([]);
+    const [disableTouch, setDisableTouch] = useState(false);
+    const subscription = useRef(null);
+    const lastVolume = useRef(0);
 
-    // Load from storage
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             const saved = await AsyncStorage.getItem(STORAGE_KEY);
-    //             if (saved) {
-    //                 setBoxes(JSON.parse(saved));
-    //             } else {
-    //                 // No storage, define initial boxes based on orientation
-    //                 const initialBoxes =
-    //                     SCREEN_WIDTH > SCREEN_HEIGHT
-    //                     ? [
-    //                         // Landscape: full height, half width
-    //                         {
-    //                             id: "1",
-    //                             x: 0,
-    //                             y: 0,
-    //                             w: SCREEN_WIDTH / 2,
-    //                             h: SCREEN_HEIGHT,
-    //                             color: "tomato",
-    //                         },
-    //                         {
-    //                             id: "2",
-    //                             x: SCREEN_WIDTH / 2,
-    //                             y: 0,
-    //                             w: SCREEN_WIDTH / 2,
-    //                             h: SCREEN_HEIGHT,
-    //                             color: "skyblue",
-    //                         },
-    //                         ]
-    //                     : [
-    //                         // Portrait: full width, half height
-    //                         {
-    //                             id: "1",
-    //                             x: 0,
-    //                             y: 0,
-    //                             w: SCREEN_WIDTH,
-    //                             h: SCREEN_HEIGHT / 2,
-    //                             color: "tomato",
-    //                         },
-    //                         {
-    //                             id: "2",
-    //                             x: 0,
-    //                             y: SCREEN_HEIGHT / 2,
-    //                             w: SCREEN_WIDTH,
-    //                             h: SCREEN_HEIGHT / 2,
-    //                             color: "skyblue",
-    //                         },
-    //                         ];
-    //                 setBoxes(initialBoxes);
-    //                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(initialBoxes));
-    //             }
-    //         } catch (e) {
-    //             console.warn("Error loading boxes", e);
-    //         }
-    //     })();
-    // }, [SCREEN_WIDTH, SCREEN_HEIGHT]);
+    useEffect(() => {
+        async function init() {
+            subscription.current = VolumeManager.addVolumeListener(({ volume }) => {
+                if (volume > lastVolume.current && !disableTouch) {
+                    setDisableTouch(true);
+                    ToastMaker("🔒 Touch off", '');
+                } else if (volume < lastVolume.current && disableTouch) {
+                    ToastMaker("🔓 Touch on", '');
+                    setDisableTouch(false);
+                }
+                lastVolume.current = volume;
+            });
+        }
+        init();
+        return () => {
+            subscription.current?.remove();
+        };
+    }, [disableTouch])
 
     const initFunc = async() => {
         const keys = await AsyncStorage.getAllKeys();
@@ -309,6 +276,10 @@ export default function Main() {
 
     useEffect(() => {
         initFunc();
+        ToastMaker("Vol ↑: Touch Lock, Vol ↓: Touch Unlock", 'long');
+        VolumeManager.getVolume().then((v) => {
+            lastVolume.current = v.volume;
+        });
     }, [])
 
     return (
@@ -325,6 +296,7 @@ export default function Main() {
                         <Plus size={scale(25)} color={'rgba(0,0,0,0.5)'} style={{alignSelf: 'center'}} />
                     </Pressable>
                 }
+                <Modal visible={disableTouch} transparent />
             </Pressable>
         </GestureHandlerRootView>
     );
@@ -355,5 +327,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         top: '45%'
+    },
+    disableTouch: {
+        backgroundColor: "#FF9535",
+        marginRight: 8,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: 0, right: 0
     }
 });

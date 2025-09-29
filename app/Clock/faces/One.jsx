@@ -20,7 +20,7 @@ const One = memo(({ time }) => {
         const interval = setInterval(() => {
             const randColor = GetRandomColor();
             setColor(randColor)
-        }, userPref?.Randomness || 300000);
+        }, userPref?.Randomness || 5000);
 
         return () => clearInterval(interval);
     }, []);
