@@ -117,7 +117,6 @@ const RenderItem = ({ item, time, changeFace, containerWidth, containerHeight })
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
