@@ -6,26 +6,26 @@ import { useUserPreferences } from "../app/context/UserPreference";
 const DriftingView = ({ children, padding = scale(30), backgroundImage, styling, onLayout }) => {
     const { userPref } = useUserPreferences();
     const [boxSize, setBoxSize] = useState({ width: 0, height: 0 });
-    const [childSize, setChildSize] = useState({ width: 0, height: 0 });
+    const childSize = useRef({ width: 0, height: 0 });
     const position = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
     // Place at center when box and child size known
     useEffect(() => {
-        if (!boxSize.width || !boxSize.height || !childSize.width || !childSize.height) return;
+        if (!boxSize.width || !boxSize.height || !childSize.current.width || !childSize.current.height) return;
 
-        const centerX = (boxSize.width - childSize.width) / 2;
-        const centerY = (boxSize.height - childSize.height) / 2;
+        const centerX = (boxSize.width - (boxSize.width * 0.7)) / 2;
+        const centerY = (boxSize.height - boxSize.height * 0.8) / 2;
 
         position.setValue({ x: centerX, y: centerY });
-    }, [boxSize, childSize, position]);
+    }, [boxSize, position]);
 
     // Random drift
     useEffect(() => {
-        if (!boxSize.width || !boxSize.height || !childSize.width || !childSize.height) return;
-
+        if (!boxSize.width || !boxSize.height || !childSize.current.width || !childSize.current.height) return;
+        
         const id = setInterval(() => {
-            const maxX = Math.max(0, boxSize.width - childSize.width - padding);
-            const maxY = Math.max(0, boxSize.height - childSize.height - padding);
+            const maxX = Math.max(0, boxSize.width - childSize.current.width - padding);
+            const maxY = Math.max(0, boxSize.height - childSize.current.height - padding);
 
             const offsetX = Math.random() * maxX;
             const offsetY = Math.random() * maxY;
@@ -36,8 +36,11 @@ const DriftingView = ({ children, padding = scale(30), backgroundImage, styling,
             }).start();
         }, userPref?.Randomness || 5000);
 
-        return () => clearInterval(id);
-    }, [boxSize, childSize, position, userPref, padding]);
+        return () => {
+            clearInterval(id)
+        };
+    }, [boxSize, position, userPref, padding]);
+
     const Container = backgroundImage ? ImageBackground : View;
     const containerProps = backgroundImage
         ? { source: backgroundImage, style: { flex: 1 } }
@@ -57,7 +60,7 @@ const DriftingView = ({ children, padding = scale(30), backgroundImage, styling,
                 style={[{ transform: position.getTranslateTransform(), alignSelf: "flex-start" }, styling]}
                 onLayout={(e) => {
                     const { width, height } = e.nativeEvent.layout;
-                    setChildSize({ width, height });
+                    childSize.current = { width, height };
                 }}
             >
                 {children}
