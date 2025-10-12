@@ -103,11 +103,11 @@ const RenderItem = ({ item, changeFace, containerWidth, containerHeight }) => {
             }}
             onPress={() => changeFace(item)}
         >
+{/* TODO Pass Data */}
             <FaceComponent />
         </Pressable>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
