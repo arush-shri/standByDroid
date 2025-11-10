@@ -9,7 +9,12 @@ import {
 } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
-import { getCurrent, getVoltage, getWattage } from "rndroid-advance-battery";
+import {
+	getCurrent,
+	getLevel,
+	getVoltage,
+	getWattage,
+} from "rndroid-advance-battery";
 import { ToastMaker } from "../../components/ToastMaker";
 import One from "./faces/One";
 import Two from "./faces/Two";
@@ -65,31 +70,23 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 			}
 		);
 
-		const levelListener = Battery.addBatteryLevelListener(
-			({ batteryLevel }) => {
-				setBatteryInfo((prev) => ({
-					...prev,
-					batteryPercent: Math.round(batteryLevel * 100),
-				}));
-			}
-		);
-
 		wattageInterval = setInterval(async () => {
 			const voltage = (await getVoltage()) / 1000;
 			const current = (await getCurrent()) / 1000;
 			const wattage = await getWattage();
+			const batteryPercent = await getLevel();
 
 			setBatteryInfo((prev) => ({
 				...prev,
 				wattage,
 				voltage,
 				current,
+				batteryPercent,
 			}));
 		}, 1000);
 
 		return () => {
 			chargingListener.remove();
-			levelListener.remove();
 			clearInterval(wattageInterval);
 		};
 	}, []);

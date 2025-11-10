@@ -1,19 +1,36 @@
-import { Text, View } from "react-native";
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native-size-scaling";
+import DriftingView from "../../../components/DriftingView";
+import { GetRandomColor } from "../../context/Randomizer";
+import { useUserPreferences } from "../../context/UserPreference";
 
 const Two = ({ info }) => {
-    return(
-        <View style={styles.contatiner}>
-            <Text style={{fontSize: 18, color: 'red'}}>TWOOOOOOOOOOOOOOOOO</Text>
-        </View>
-    )
-}
+	const { userPref } = useUserPreferences();
+	const [color, setColor] = useState("#56d137ff");
+	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const randColor = GetRandomColor();
+			setColor(randColor);
+		}, userPref?.Randomness || 5000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<DriftingView
+			onLayout={(e) => {
+				const { width, height } = e.nativeEvent.layout;
+				setBoxSize({ width, height });
+			}}
+			styling={styles.container}
+		></DriftingView>
+	);
+};
 
 const styles = StyleSheet.create({
-    contatiner: {
-        flex: 1,
-        backgroundColor: '#000'
-    }
+	container: {},
 });
 
 export default Two;
