@@ -50,7 +50,8 @@
     "react-native-size-scaling": "^0.5.4",
     "react-native-volume-manager": "^2.0.8",
     "react-native-web": "~0.21.0",
-    "react-native-worklets": "^0.5.1"
+    "react-native-worklets": "^0.5.1",
+    "rndroid-advance-battery": "^0.1.2"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
