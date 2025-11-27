@@ -23,7 +23,7 @@ const One = memo(({ time }) => {
 		}, userPref?.Randomness || 5000);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [userPref]);
 
 	return (
 		<DriftingView

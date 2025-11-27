@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Check, Move, MoveDiagonal2, Plus, Trash } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -14,6 +13,12 @@ import { VolumeManager } from "react-native-volume-manager";
 import SelectorView from "../components/SelectorView";
 import { ToastMaker } from "../components/ToastMaker";
 import EventsEmitter from "./context/EventsEmitter";
+import {
+	allCacheKeys,
+	deleteCache,
+	getCache,
+	setCache,
+} from "./context/Storage";
 
 const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 	const [isEditing, setIsEditing] = useState(false);
@@ -23,9 +28,9 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 	const listenerRef = useRef(null);
 
 	useEffect(() => {
-		(async () => {
+		(() => {
 			try {
-				const saved = await AsyncStorage.getItem(storeKey);
+				const saved = getCache(storeKey);
 				if (saved) {
 					setBox(JSON.parse(saved));
 				}
@@ -58,10 +63,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 
 	// Save to storage
 	const saveBox = useCallback(
-		async (updated) => {
+		(updated) => {
 			try {
 				setBox(updated);
-				await AsyncStorage.setItem(storeKey, JSON.stringify(updated));
+				setCache(storeKey, JSON.stringify(updated));
 			} catch (e) {
 				console.log("Save box error", e);
 			}
@@ -70,7 +75,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 	);
 
 	const saveBoxView = useCallback(
-		async (val) => {
+		(val) => {
 			try {
 				const updated = {
 					...box,
@@ -78,7 +83,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 					selected: "one",
 				};
 				setBox(updated);
-				await AsyncStorage.setItem(storeKey, JSON.stringify(updated));
+				setCache(storeKey, JSON.stringify(updated));
 			} catch (e) {
 				console.log("Save box error", e);
 			}
@@ -261,27 +266,22 @@ export default function Main() {
 	}, [disableTouch]);
 
 	const initFunc = async () => {
-		const keys = await AsyncStorage.getAllKeys();
+		const keys = allCacheKeys();
 		const filteredKeys = keys.filter((key) => key.startsWith("boxPos_"));
 
 		if (filteredKeys.length === 0) return;
 
-		const stores = await AsyncStorage.multiGet(filteredKeys);
-		setBoxes(
-			stores.map(([_, value]) => {
-				try {
-					return JSON.parse(value);
-				} catch {
-					return value;
-				}
-			})
-		);
+		const stores = filteredKeys.map((key) => {
+			const value = getCache(key);
+			return JSON.parse(value);
+		});
+		setBoxes(stores);
 	};
 
 	const saveBoxes = useCallback(
-		async (storeKey, updated) => {
+		(storeKey, updated) => {
 			try {
-				await AsyncStorage.setItem(storeKey, JSON.stringify(updated));
+				setCache(storeKey, JSON.stringify(updated));
 			} catch (e) {
 				console.log("Save box error", e);
 			}
@@ -317,7 +317,7 @@ export default function Main() {
 
 	const deleteBox = useCallback(
 		(storeKey) => {
-			AsyncStorage.removeItem(storeKey);
+			deleteCache(storeKey);
 			setBoxes((prev) => prev.filter((box) => box.storeKey !== storeKey));
 		},
 		[setBoxes]

@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
 	forwardRef,
 	useCallback,
@@ -9,6 +8,7 @@ import {
 import { FlatList, NativeModules, Pressable, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import { ToastMaker } from "../../components/ToastMaker";
+import { getCache, setCache } from "../context/Storage";
 import One from "./faces/One";
 import Two from "./faces/Two";
 
@@ -25,9 +25,9 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 	const FaceComponent = FacesMap[selectedFace];
 
 	const changeFace = useCallback(
-		async (val) => {
+		(val) => {
 			try {
-				const boxStr = await AsyncStorage.getItem(storeKey);
+				const boxStr = getCache(storeKey);
 				if (boxStr) {
 					const box = JSON.parse(boxStr);
 					const updated = {
@@ -36,10 +36,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 					};
 					setSelectedFace(val);
 					setSelector(false);
-					await AsyncStorage.setItem(
-						storeKey,
-						JSON.stringify(updated)
-					);
+					setCache(storeKey, JSON.stringify(updated));
 				}
 			} catch (e) {
 				console.log("Save box error", e);

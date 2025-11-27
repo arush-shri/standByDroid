@@ -16,7 +16,7 @@ const Two = ({ info }) => {
 		}, userPref?.Randomness || 5000);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [userPref]);
 
 	return (
 		<DriftingView
