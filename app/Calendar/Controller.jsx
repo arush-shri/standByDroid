@@ -39,23 +39,24 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 			CalendarAPI.EntityTypes.EVENT
 		);
 		const now = new Date();
-		const future = new Date();
+		const future = new Date(now);
 		future.setMonth(future.getMonth() + 1);
 
 		const allEvents = await CalendarAPI.getEventsAsync(
 			calendars.map((c) => c.id),
-			new Date(now.getFullYear(), now.getMonth() - 1, 1),
+			new Date(now.getFullYear(), now.getMonth(), 1),
 			future
 		);
 
-		// Group events by date for marking
 		const grouped = {};
+
 		allEvents.forEach((ev) => {
 			const date = ev.startDate.split("T")[0];
-			grouped[date] = { marked: true, dotColor: "#007AFF" };
+			if (!grouped[date]) grouped[date] = [];
+			grouped[date].push(ev);
 		});
 
-		setData({ events: allEvents, marked: grouped });
+		setData({ events: grouped });
 	};
 
 	const changeFace = useCallback(

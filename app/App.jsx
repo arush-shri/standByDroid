@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import { useKeepAwake } from "expo-keep-awake";
 import { StatusBar } from "expo-status-bar";
 import Main from "./Main";
 import Setting from "./Setting";
@@ -9,6 +10,7 @@ import { PreferenceProvider } from "./context/UserPreference";
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
+	useKeepAwake();
 	const [fontsLoaded] = useFonts({
 		avengers: require("../assets/fonts/avengers.ttf"),
 		"batman-filled": require("../assets/fonts/batmfilled.ttf"),
@@ -28,9 +30,11 @@ export default function App() {
 	});
 
 	return (
-		<PreferenceProvider>
-			<Navigation />
-		</PreferenceProvider>
+		fontsLoaded && (
+			<PreferenceProvider>
+				<Navigation />
+			</PreferenceProvider>
+		)
 	);
 }
 

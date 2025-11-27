@@ -109,7 +109,7 @@ const One = ({ info }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {},
+	container: { alignSelf: "flex-start" },
 	progressBox: {},
 	percentText: {
 		fontFamily: "formula1",
