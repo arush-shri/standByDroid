@@ -1,10 +1,4 @@
-import {
-	forwardRef,
-	useCallback,
-	useEffect,
-	useImperativeHandle,
-	useState,
-} from "react";
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { FlatList, NativeModules, Pressable, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import { ToastMaker } from "../../components/ToastMaker";
@@ -52,18 +46,6 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 	useImperativeHandle(ref, () => ({
 		handleTripleTap,
 	}));
-
-	const GetMusicData = async () => {
-		const nowPlaying = await MediaControllerModule.getNowPlaying();
-		console.log(nowPlaying);
-		if (nowPlaying === "denied") {
-			await MediaControllerModule.openNotificationAccessSettings();
-		}
-	};
-
-	useEffect(() => {
-		GetMusicData();
-	}, []);
 
 	return (
 		<View style={styles.container}>
