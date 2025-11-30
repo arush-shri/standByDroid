@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import {
+	Menu,
+	MenuOption,
+	MenuOptions,
+	MenuTrigger,
+} from "react-native-popup-menu";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
 import { GetRandomColor } from "../../context/Randomizer";
@@ -14,6 +20,9 @@ const One = ({ data }) => {
 	const daysInMonth = new Date(year, month + 1, 0).getDate();
 	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
 	const [color, setColor] = useState("#C0C0C0");
+
+	const scaled5 = Math.min(boxSize.width * 0.006, boxSize.height * 0.012);
+	const scaled10 = Math.min(boxSize.width * 0.012, boxSize.height * 0.024);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -44,61 +53,123 @@ const One = ({ data }) => {
 			const isToday = todayKey === key;
 
 			return (
-				<Pressable
-					key={day}
-					style={[styles.dayCell]}
-					onPress={() => {}}
-				>
-					<Text
-						style={[
-							styles.dayText,
-							{
-								color: isToday ? todayColor : color,
-								fontSize: Math.min(
-									boxSize.width * 0.06,
-									boxSize.height * 0.12
-								),
-							},
-						]}
+				<Menu key={day}>
+					<MenuTrigger
+						customStyles={{
+							triggerWrapper: styles.dayCell,
+						}}
 					>
-						{day}
-					</Text>
+						<Text
+							style={[
+								styles.dayText,
+								{
+									color: isToday ? todayColor : color,
+									fontSize: Math.min(
+										boxSize.width * 0.06,
+										boxSize.height * 0.12
+									),
+								},
+							]}
+						>
+							{day}
+						</Text>
 
-					{/* Dots */}
-					<View
-						style={[
-							styles.dotContainer,
-							{
-								gap: Math.min(
-									boxSize.width * 0.005,
-									boxSize.height * 0.01
-								),
-							},
-						]}
+						{/* Dots */}
+						<View
+							style={[
+								styles.dotContainer,
+								{
+									gap: Math.min(
+										boxSize.width * 0.005,
+										boxSize.height * 0.01
+									),
+								},
+							]}
+						>
+							{Array(eventCount)
+								.fill(0)
+								.map((_, i) => (
+									<View
+										key={i}
+										style={{
+											height: Math.min(
+												boxSize.width * 0.01,
+												boxSize.height * 0.02
+											),
+											width: Math.min(
+												boxSize.width * 0.01,
+												boxSize.height * 0.02
+											),
+											backgroundColor: isToday
+												? todayColor
+												: color,
+											borderRadius: 1000,
+										}}
+									/>
+								))}
+						</View>
+					</MenuTrigger>
+
+					<MenuOptions
+						optionsContainerStyle={{
+							borderRadius: scaled10,
+							justifyContent: "center",
+							paddingHorizontal: scaled10,
+							paddingVertical: scaled5,
+							width: boxSize.width,
+							backgroundColor: "rgba(0, 0, 0, 0.8)",
+						}}
 					>
-						{Array(eventCount)
-							.fill(0)
-							.map((_, i) => (
-								<View
-									key={i}
-									style={{
-										height: Math.min(
-											boxSize.width * 0.01,
-											boxSize.height * 0.02
-										),
-										width: Math.min(
-											boxSize.width * 0.01,
-											boxSize.height * 0.02
-										),
-										backgroundColor: isToday
-											? todayColor
-											: color,
-										borderRadius: 1000,
-									}}
-								/>
-							))}
-					</View>
-				</Pressable>
+						<MenuOption>
+							<ScrollView>
+								{events[key]?.map((ev, i) => {
+									const listClr = GetRandomColor();
+									return (
+										<View key={i} style={styles.eventItem}>
+											<Text
+												style={{
+													fontFamily: "28days",
+													fontSize: Math.min(
+														boxSize.width * 0.045,
+														boxSize.height * 0.09
+													),
+													color: listClr,
+												}}
+											>
+												{ev.title}
+											</Text>
+											<Text
+												style={{
+													fontFamily: "28days",
+													fontSize: Math.min(
+														boxSize.width * 0.045,
+														boxSize.height * 0.09
+													),
+													color: listClr,
+												}}
+											>
+												{ev.startDate}
+											</Text>
+										</View>
+									);
+								}) || (
+									<Text
+										style={{
+											fontFamily: "28days",
+											fontSize: Math.min(
+												boxSize.width * 0.06,
+												boxSize.height * 0.12
+											),
+											color: "#222",
+										}}
+									>
+										No events
+									</Text>
+								)}
+							</ScrollView>
+						</MenuOption>
+					</MenuOptions>
+				</Menu>
 			);
 		});
 	};
@@ -191,13 +262,7 @@ const styles = StyleSheet.create({
 		fontWeight: "700",
 		marginBottom: 10,
 	},
-	eventItem: {
-		padding: 8,
-		borderBottomWidth: 1,
-		borderColor: "#eee",
-	},
-	eventTitle: { fontSize: 16, fontWeight: "600" },
-	eventTime: { fontSize: 12, color: "gray" },
+	eventItem: { flex: 1 },
 });
 
 export default One;

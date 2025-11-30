@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { useKeepAwake } from "expo-keep-awake";
 import { StatusBar } from "expo-status-bar";
+import { MenuProvider } from "react-native-popup-menu";
 import Main from "./Main";
 import Setting from "./Setting";
 import { PreferenceProvider } from "./context/UserPreference";
@@ -31,9 +32,11 @@ export default function App() {
 
 	return (
 		fontsLoaded && (
-			<PreferenceProvider>
-				<Navigation />
-			</PreferenceProvider>
+			<MenuProvider>
+				<PreferenceProvider>
+					<Navigation />
+				</PreferenceProvider>
+			</MenuProvider>
 		)
 	);
 }
@@ -48,8 +51,8 @@ const Navigation = () => (
 				headerShown: false,
 			}}
 		>
-			<Tab.Screen name="Setting" component={Setting} />
 			<Tab.Screen name="Main" component={Main} />
+			<Tab.Screen name="Setting" component={Setting} />
 		</Tab.Navigator>
 		<StatusBar style="auto" hidden={true} />
 	</NavigationContainer>
