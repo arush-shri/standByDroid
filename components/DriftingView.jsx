@@ -29,7 +29,7 @@ const DriftingView = ({
 		const centerY = (boxSize.height - childSize.current.height) / 2;
 
 		position.setValue({ x: centerX, y: centerY });
-	}, [boxSize, position]);
+	}, [boxSize, position, childSize.current]);
 
 	// Random drift
 	useEffect(() => {
