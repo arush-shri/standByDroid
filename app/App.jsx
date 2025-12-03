@@ -3,12 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { useKeepAwake } from "expo-keep-awake";
 import { StatusBar } from "expo-status-bar";
+import { LogBox } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Main from "./Main";
 import Setting from "./Setting";
 import { PreferenceProvider } from "./context/UserPreference";
 
 const Tab = createMaterialTopTabNavigator();
+LogBox.ignoreAllLogs(true);
 
 export default function App() {
 	useKeepAwake();

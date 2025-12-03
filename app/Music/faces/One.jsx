@@ -1,5 +1,5 @@
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
@@ -11,6 +11,7 @@ import {
 	PlayMedia,
 	SendCommand,
 } from "../MediaController";
+import { Seeker } from "../Seeker";
 
 const One = ({}) => {
 	const [track, setTrack] = useState(null);
@@ -18,11 +19,17 @@ const One = ({}) => {
 	const [color, setColor] = useState("hsla(36, 81%, 61%, 1.00)");
 	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
 	const reactSize = Math.min(boxSize.width * 0.5, boxSize.height);
+	const timeoutRef = useRef(null);
 
 	const getData = async () => {
+		if (timeoutRef) clearTimeout(timeoutRef.current);
 		const data = await GetCurrTrack();
-		console.log("11111111111: ", data);
 		setTrack(data === "none" ? null : data);
+		if (data !== "none") {
+			timeoutRef.current = setTimeout(() => {
+				getData();
+			}, data.duration);
+		}
 	};
 
 	useEffect(() => {
@@ -141,6 +148,7 @@ const One = ({}) => {
 					color={color}
 				/>
 			</View>
+			<Seeker reactSize={reactSize} color={color} callback={getData} />
 		</DriftingView>
 	);
 };

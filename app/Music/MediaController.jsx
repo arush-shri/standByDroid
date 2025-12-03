@@ -29,3 +29,13 @@ export const SendCommand = async (command) => {
 	await MediaController.sendCommand(command);
 	return true;
 };
+
+export const SeekTo = async (value) => {
+	await MediaController.seekTo(value);
+	return true;
+};
+
+export const GetPosition = async () => {
+	const data = await MediaController.getPlaybackPosition();
+	return data;
+};
