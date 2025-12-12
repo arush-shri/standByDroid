@@ -1,5 +1,6 @@
 import * as Font from "expo-font";
 import DocumentPicker from "react-native-document-picker";
+import { getCache, setCache } from "../app/context/Storage";
 
 export async function PickFont() {
 	try {
@@ -29,6 +30,8 @@ export async function LoadFont(name, uri) {
 	await Font.loadAsync({
 		[name]: uri,
 	});
-
+	const stored = JSON.parse(getCache("storedUserFonts") || "{}");
+	stored[name] = uri;
+	setCache("storedUserFonts", stored);
 	return name;
 }

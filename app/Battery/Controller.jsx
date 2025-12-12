@@ -17,11 +17,9 @@ import {
 import { ToastMaker } from "../../components/ToastMaker";
 import { getCache, setCache } from "../context/Storage";
 import One from "./faces/One";
-import Two from "./faces/Two";
 
 const FacesMap = {
 	one: One,
-	two: Two,
 };
 
 export const Controller = forwardRef(({ storeKey, viewface }, ref) => {

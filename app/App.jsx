@@ -7,6 +7,7 @@ import { LogBox } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import Main from "./Main";
 import Setting from "./Setting";
+import { getCache } from "./context/Storage";
 import { PreferenceProvider } from "./context/UserPreference";
 
 const Tab = createMaterialTopTabNavigator();
@@ -14,6 +15,7 @@ LogBox.ignoreAllLogs(true);
 
 export default function App() {
 	useKeepAwake();
+	const stored = JSON.parse(getCache("storedUserFonts") || "{}");
 	const [fontsLoaded] = useFonts({
 		avengers: require("../assets/fonts/avengers.ttf"),
 		"batman-filled": require("../assets/fonts/batmfilled.ttf"),
@@ -30,6 +32,7 @@ export default function App() {
 		naruto: require("../assets/fonts/naruto.ttf"),
 		rdr: require("../assets/fonts/rdr.ttf"),
 		tlou: require("../assets/fonts/tlou.ttf"),
+		...stored,
 	});
 
 	return (
