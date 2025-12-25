@@ -4,8 +4,6 @@ import { Controller as BatteryController } from "../app/Battery/Controller";
 import { Controller as CalendarController } from "../app/Calendar/Controller";
 import { Controller as ClockController } from "../app/Clock/Controller";
 import { Controller as MusicController } from "../app/Music/Controller";
-import { Controller as NotificationController } from "../app/Notification/Controller";
-import { Controller as TodoListController } from "../app/TodoList/Controller";
 import ViewPicker from "../components/Modals/ViewPicker";
 
 const TAP_DELAY = 200;
@@ -109,24 +107,6 @@ const RenderView = forwardRef(({ view, storeKey, viewface }, ref) => {
 	if (view === "view_4") {
 		return (
 			<MusicController
-				ref={controllerRef}
-				storeKey={storeKey}
-				viewface={viewface}
-			/>
-		);
-	}
-	if (view === "view_5") {
-		return (
-			<NotificationController
-				ref={controllerRef}
-				storeKey={storeKey}
-				viewface={viewface}
-			/>
-		);
-	}
-	if (view === "view_6") {
-		return (
-			<TodoListController
 				ref={controllerRef}
 				storeKey={storeKey}
 				viewface={viewface}

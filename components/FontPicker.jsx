@@ -1,32 +1,57 @@
+import { pick } from "@react-native-documents/picker";
+import { Directory, File } from "expo-file-system";
 import * as Font from "expo-font";
-import DocumentPicker from "react-native-document-picker";
 import { getCache, setCache } from "../app/context/Storage";
+
+const fontDir = new Directory(
+	`${Directory.documentDirectory}standByDroid-fonts`
+);
+
+async function ensureFontDir() {
+	try {
+		const info = await fontDir.info();
+		if (!info.exists) {
+			await fontDir.create({ intermediates: true });
+		}
+	} catch (error) {
+		console.log("Exist Error: ", error);
+	}
+}
 
 export async function PickFont() {
 	try {
-		const res = await DocumentPicker.pick({
+		console.log("222222222");
+		const result = await pick({
 			type: [
-				// Android MIME types
 				"font/ttf",
 				"font/otf",
 				"application/x-font-ttf",
 				"application/x-font-otf",
-				// iOS UTIs
 				"public.truetype-ttf-font",
 				"public.opentype-font",
 				"public.font",
 			],
-			allowMultiSelection: false,
+			multiple: false,
 		});
-		console.log(res);
-		return res[0].uri;
+		console.log(result);
+		const res = result[0];
+
+		await ensureFontDir();
+
+		const fileName = res.name || `font-${Date.now()}.ttf`;
+		const destFile = fontDir.file(fileName);
+
+		const sourceFile = new File(res.uri);
+		await sourceFile.copy(destFile);
+		console.log(destFile);
+		return destFile.uri;
 	} catch (error) {
-		if (DocumentPicker.isCancel(error)) return null;
 		console.log("Font Pick Error: ", error);
 	}
 }
 
 export async function LoadFont(name, uri) {
+	console.log(name, uri);
 	await Font.loadAsync({
 		[name]: uri,
 	});

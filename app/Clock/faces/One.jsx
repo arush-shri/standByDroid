@@ -2,7 +2,9 @@ import { memo, useEffect, useState } from "react";
 import { Text } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
+import EventsEmitter from "../../context/EventsEmitter";
 import { GetRandomColor } from "../../context/Randomizer";
+import { getCache } from "../../context/Storage";
 import { useUserPreferences } from "../../context/UserPreference";
 
 const One = memo(({ time }) => {
@@ -15,6 +17,23 @@ const One = memo(({ time }) => {
 	const [hourMinute, ampm] = formattedTime.split("\u202F");
 	const [color, setColor] = useState("#4582C0");
 	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
+	const [fontFamily, setFontFam] = useState(
+		getCache("clock-font") || "transformers"
+	);
+
+	useEffect(() => {
+		const changeFont = () => {
+			const res = getCache("clock-font");
+			if (res) {
+				setFontFam(res);
+			}
+		};
+		EventsEmitter.on("editingStarted", changeFont);
+
+		return () => {
+			EventsEmitter.off("editingStarted", changeFont);
+		};
+	}, []);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -42,6 +61,7 @@ const One = memo(({ time }) => {
 							boxSize.width * 0.3,
 							boxSize.height * 0.8
 						),
+						fontFamily,
 					},
 				]}
 			>
@@ -56,6 +76,7 @@ const One = memo(({ time }) => {
 							boxSize.width * 0.15,
 							boxSize.height * 0.4
 						),
+						fontFamily,
 					},
 				]}
 			>
