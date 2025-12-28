@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
+import EventsEmitter from "../../context/EventsEmitter";
 import { GetRandomColor } from "../../context/Randomizer";
+import { getCache } from "../../context/Storage";
 import { useUserPreferences } from "../../context/UserPreference";
 import {
 	GetCurrTrack,
@@ -20,6 +22,21 @@ const One = ({}) => {
 	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
 	const reactSize = Math.min(boxSize.width * 0.5, boxSize.height);
 	const timeoutRef = useRef(null);
+	const [fontFamily, setFontFam] = useState(getCache("music-font"));
+
+	useEffect(() => {
+		const changeFont = () => {
+			const res = getCache("music-font");
+			if (res) {
+				setFontFam(res);
+			}
+		};
+		EventsEmitter.on("music-font", changeFont);
+
+		return () => {
+			EventsEmitter.off("music-font", changeFont);
+		};
+	}, []);
 
 	const getData = async () => {
 		if (timeoutRef) clearTimeout(timeoutRef.current);
@@ -58,7 +75,7 @@ const One = ({}) => {
 					style={{
 						color: color,
 						fontSize: reactSize * 0.2,
-						fontFamily: "rdr",
+						fontFamily,
 					}}
 				>
 					No Media Playing
@@ -81,7 +98,7 @@ const One = ({}) => {
 
 			<Text
 				style={{
-					fontFamily: "naruto",
+					fontFamily,
 					color,
 					fontSize: reactSize * 0.2,
 				}}
@@ -90,7 +107,7 @@ const One = ({}) => {
 			</Text>
 			<Text
 				style={{
-					fontFamily: "naruto",
+					fontFamily,
 					color,
 					fontSize: reactSize * 0.1,
 					marginTop: reactSize * 0.02,

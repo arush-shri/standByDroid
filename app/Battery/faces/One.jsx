@@ -3,7 +3,9 @@ import { StyleSheet as RNStyle, Text, View } from "react-native";
 import { scale, StyleSheet } from "react-native-size-scaling";
 import Svg, { Circle } from "react-native-svg";
 import DriftingView from "../../../components/DriftingView";
+import EventsEmitter from "../../context/EventsEmitter";
 import { addOpacity, GetRandomColor } from "../../context/Randomizer";
+import { getCache } from "../../context/Storage";
 import { useUserPreferences } from "../../context/UserPreference";
 
 const One = ({ info }) => {
@@ -16,6 +18,21 @@ const One = ({ info }) => {
 	const radius = (size - strokeWidth) / 2;
 	const circumference = 2 * Math.PI * radius;
 	const strokeDashoffset = circumference * (1 - info.batteryPercent / 100);
+	const [fontFamily, setFontFam] = useState(getCache("battery-font"));
+
+	useEffect(() => {
+		const changeFont = () => {
+			const res = getCache("battery-font");
+			if (res) {
+				setFontFam(res);
+			}
+		};
+		EventsEmitter.on("battery-font", changeFont);
+
+		return () => {
+			EventsEmitter.off("battery-font", changeFont);
+		};
+	}, []);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -59,10 +76,10 @@ const One = ({ info }) => {
 			<View style={[RNStyle.absoluteFill, styles.center]}>
 				<Text
 					style={[
-						styles.percentText,
 						{
 							fontSize: size * 0.22,
 							color: color,
+							fontFamily,
 						},
 					]}
 				>
@@ -70,10 +87,10 @@ const One = ({ info }) => {
 				</Text>
 				<Text
 					style={[
-						styles.percentText,
 						{
 							fontSize: size * 0.09,
 							color: color,
+							fontFamily,
 						},
 					]}
 				>
@@ -81,11 +98,11 @@ const One = ({ info }) => {
 				</Text>
 				<Text
 					style={[
-						styles.percentText,
 						{
 							fontSize: size * 0.07,
 							color: color,
 							marginTop: scale(size * 0.02),
+							fontFamily,
 						},
 					]}
 				>
@@ -93,11 +110,11 @@ const One = ({ info }) => {
 				</Text>
 				<Text
 					style={[
-						styles.percentText,
 						{
 							fontSize: size * 0.07,
 							color: color,
 							marginTop: scale(size * 0.02),
+							fontFamily,
 						},
 					]}
 				>
@@ -111,9 +128,6 @@ const One = ({ info }) => {
 const styles = StyleSheet.create({
 	container: { alignSelf: "flex-start" },
 	progressBox: {},
-	percentText: {
-		fontFamily: "formula1",
-	},
 	center: {
 		alignItems: "center",
 		justifyContent: "center",

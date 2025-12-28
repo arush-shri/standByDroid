@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
 	text: {
 		color: "rgba(255,255,255,0.8)",
 		fontSize: 19,
-		fontFamily: "bo2",
 	},
 	scrollContainer: {
 		justifyContent: "center",

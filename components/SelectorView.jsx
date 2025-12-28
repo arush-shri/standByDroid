@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 22,
-		fontFamily: "rdr",
 		textAlign: "center",
 	},
 });

@@ -17,9 +17,7 @@ const One = memo(({ time }) => {
 	const [hourMinute, ampm] = formattedTime.split("\u202F");
 	const [color, setColor] = useState("#4582C0");
 	const [boxSize, setBoxSize] = useState({ width: 1, height: 1 });
-	const [fontFamily, setFontFam] = useState(
-		getCache("clock-font") || "transformers"
-	);
+	const [fontFamily, setFontFam] = useState(getCache("clock-font"));
 
 	useEffect(() => {
 		const changeFont = () => {
@@ -28,10 +26,10 @@ const One = memo(({ time }) => {
 				setFontFam(res);
 			}
 		};
-		EventsEmitter.on("editingStarted", changeFont);
+		EventsEmitter.on("clock-font", changeFont);
 
 		return () => {
-			EventsEmitter.off("editingStarted", changeFont);
+			EventsEmitter.off("clock-font", changeFont);
 		};
 	}, []);
 
@@ -93,12 +91,10 @@ const styles = StyleSheet.create({
 	},
 	hourMinute: {
 		fontSize: 90,
-		fontFamily: "transformers",
 	},
 	ampm: {
 		fontSize: 25,
 		marginLeft: 8,
-		fontFamily: "transformers",
 	},
 });
 

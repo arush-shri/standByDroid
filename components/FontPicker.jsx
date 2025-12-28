@@ -1,17 +1,16 @@
 import { pick } from "@react-native-documents/picker";
-import { Directory, File } from "expo-file-system";
+import { Directory, Paths } from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Font from "expo-font";
 import { getCache, setCache } from "../app/context/Storage";
 
-const fontDir = new Directory(
-	`${Directory.documentDirectory}standByDroid-fonts`
-);
+const fontDir = new Directory(Paths.document, "standByDroid-fonts");
 
-async function ensureFontDir() {
+function ensureFontDir() {
 	try {
-		const info = await fontDir.info();
+		const info = fontDir.info();
 		if (!info.exists) {
-			await fontDir.create({ intermediates: true });
+			fontDir.create({ intermediates: true });
 		}
 	} catch (error) {
 		console.log("Exist Error: ", error);
@@ -20,7 +19,6 @@ async function ensureFontDir() {
 
 export async function PickFont() {
 	try {
-		console.log("222222222");
 		const result = await pick({
 			type: [
 				"font/ttf",
@@ -33,30 +31,36 @@ export async function PickFont() {
 			],
 			multiple: false,
 		});
-		console.log(result);
 		const res = result[0];
 
-		await ensureFontDir();
+		ensureFontDir();
 
-		const fileName = res.name || `font-${Date.now()}.ttf`;
-		const destFile = fontDir.file(fileName);
+		const fileName =
+			res.name.replaceAll(" ", "_").replace(/[^\w.-]/g, "") ||
+			`font-${Date.now()}.ttf`;
+		const destUri = `${fontDir.uri}/${fileName}`;
 
-		const sourceFile = new File(res.uri);
-		await sourceFile.copy(destFile);
-		console.log(destFile);
-		return destFile.uri;
+		await FileSystem.copyAsync({
+			from: res.uri,
+			to: destUri,
+		});
+
+		console.log("Font copied:", destUri);
+		return destUri;
 	} catch (error) {
 		console.log("Font Pick Error: ", error);
 	}
 }
 
 export async function LoadFont(name, uri) {
-	console.log(name, uri);
-	await Font.loadAsync({
-		[name]: uri,
-	});
-	const stored = JSON.parse(getCache("storedUserFonts") || "{}");
-	stored[name] = uri;
-	setCache("storedUserFonts", stored);
-	return name;
+	try {
+		await Font.loadAsync({
+			[name]: uri,
+		});
+		const stored = JSON.parse(getCache("storedUserFonts") || "{}");
+		stored[name] = uri;
+		setCache("storedUserFonts", stored);
+	} catch (error) {
+		console.log("Log font error: ", error);
+	}
 }

@@ -8,7 +8,9 @@ import {
 } from "react-native-popup-menu";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
+import EventsEmitter from "../../context/EventsEmitter";
 import { GetRandomColor } from "../../context/Randomizer";
+import { getCache } from "../../context/Storage";
 import { useUserPreferences } from "../../context/UserPreference";
 
 const One = ({ data }) => {
@@ -23,6 +25,21 @@ const One = ({ data }) => {
 
 	const scaled5 = Math.min(boxSize.width * 0.006, boxSize.height * 0.012);
 	const scaled10 = Math.min(boxSize.width * 0.012, boxSize.height * 0.024);
+	const [fontFamily, setFontFam] = useState(getCache("calendar-font"));
+
+	useEffect(() => {
+		const changeFont = () => {
+			const res = getCache("calendar-font");
+			if (res) {
+				setFontFam(res);
+			}
+		};
+		EventsEmitter.on("calendar-font", changeFont);
+
+		return () => {
+			EventsEmitter.off("calendar-font", changeFont);
+		};
+	}, []);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -61,13 +78,13 @@ const One = ({ data }) => {
 					>
 						<Text
 							style={[
-								styles.dayText,
 								{
 									color: isToday ? todayColor : color,
 									fontSize: Math.min(
 										boxSize.width * 0.06,
 										boxSize.height * 0.12
 									),
+									fontFamily,
 								},
 							]}
 						>
@@ -128,7 +145,7 @@ const One = ({ data }) => {
 										<View key={i} style={styles.eventItem}>
 											<Text
 												style={{
-													fontFamily: "28days",
+													fontFamily,
 													fontSize: Math.min(
 														boxSize.width * 0.045,
 														boxSize.height * 0.09
@@ -140,7 +157,7 @@ const One = ({ data }) => {
 											</Text>
 											<Text
 												style={{
-													fontFamily: "28days",
+													fontFamily,
 													fontSize: Math.min(
 														boxSize.width * 0.045,
 														boxSize.height * 0.09
@@ -155,7 +172,7 @@ const One = ({ data }) => {
 								}) || (
 									<Text
 										style={{
-											fontFamily: "28days",
+											fontFamily,
 											fontSize: Math.min(
 												boxSize.width * 0.06,
 												boxSize.height * 0.12
@@ -195,6 +212,7 @@ const One = ({ data }) => {
 							boxSize.width * 0.03,
 							boxSize.height * 0.06
 						),
+						fontFamily,
 					},
 				]}
 			>
@@ -222,7 +240,6 @@ const styles = StyleSheet.create({
 	contatiner: {},
 	monthTitle: {
 		textAlign: "center",
-		fontFamily: "tlou",
 		alignSelf: "center",
 	},
 	calendarGrid: {

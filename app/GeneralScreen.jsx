@@ -16,7 +16,7 @@ const AddFont = () => {
 				style={{ color: "#FFF", fontSize: scale(20) }}
 				onPress={() => setShow(true)}
 			>
-				Add New Font
+				Custom Font
 			</Text>
 			<FontSelector visible={show} closeModal={() => setShow(false)} />
 		</>
