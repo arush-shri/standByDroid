@@ -26,6 +26,7 @@ const One = ({ data }) => {
 	const scaled5 = Math.min(boxSize.width * 0.006, boxSize.height * 0.012);
 	const scaled10 = Math.min(boxSize.width * 0.012, boxSize.height * 0.024);
 	const [fontFamily, setFontFam] = useState(getCache("calendar-font"));
+	const [todayColor, setTodayColor] = useState("#96f796");
 
 	useEffect(() => {
 		const changeFont = () => {
@@ -45,6 +46,7 @@ const One = ({ data }) => {
 		const interval = setInterval(() => {
 			const randColor = GetRandomColor();
 			setColor(randColor);
+			setTodayColor(GetRandomColor());
 		}, userPref?.Randomness || 5000);
 
 		return () => clearInterval(interval);
@@ -53,19 +55,24 @@ const One = ({ data }) => {
 	const getDateKey = (day) =>
 		`${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(
 			2,
-			"0"
+			"0",
 		)}`;
 	const events = data?.events || {};
 	const todayKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-		today.getDate()
+		today.getDate(),
 	).padStart(2, "0")}`;
+
+	const getNormalTime = (isoString) =>
+		new Date(isoString).toLocaleTimeString([], {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
 
 	const RenderDays = () => {
 		return Array.from({ length: daysInMonth }, (_, i) => {
 			const day = i + 1;
 			const key = getDateKey(day);
 			const eventCount = events[key]?.length || 0;
-			const todayColor = GetRandomColor();
 
 			const isToday = todayKey === key;
 
@@ -82,7 +89,7 @@ const One = ({ data }) => {
 									color: isToday ? todayColor : color,
 									fontSize: Math.min(
 										boxSize.width * 0.06,
-										boxSize.height * 0.12
+										boxSize.height * 0.12,
 									),
 									fontFamily,
 								},
@@ -98,7 +105,7 @@ const One = ({ data }) => {
 								{
 									gap: Math.min(
 										boxSize.width * 0.005,
-										boxSize.height * 0.01
+										boxSize.height * 0.01,
 									),
 								},
 							]}
@@ -111,11 +118,11 @@ const One = ({ data }) => {
 										style={{
 											height: Math.min(
 												boxSize.width * 0.01,
-												boxSize.height * 0.02
+												boxSize.height * 0.02,
 											),
 											width: Math.min(
 												boxSize.width * 0.01,
-												boxSize.height * 0.02
+												boxSize.height * 0.02,
 											),
 											backgroundColor: isToday
 												? todayColor
@@ -148,7 +155,7 @@ const One = ({ data }) => {
 													fontFamily,
 													fontSize: Math.min(
 														boxSize.width * 0.045,
-														boxSize.height * 0.09
+														boxSize.height * 0.09,
 													),
 													color: listClr,
 												}}
@@ -160,12 +167,12 @@ const One = ({ data }) => {
 													fontFamily,
 													fontSize: Math.min(
 														boxSize.width * 0.045,
-														boxSize.height * 0.09
+														boxSize.height * 0.09,
 													),
 													color: listClr,
 												}}
 											>
-												{ev.startDate}
+												{getNormalTime(ev.startDate)}
 											</Text>
 										</View>
 									);
@@ -175,9 +182,9 @@ const One = ({ data }) => {
 											fontFamily,
 											fontSize: Math.min(
 												boxSize.width * 0.06,
-												boxSize.height * 0.12
+												boxSize.height * 0.12,
 											),
-											color: "#222",
+											color: "#fff",
 										}}
 									>
 										No events
@@ -206,11 +213,11 @@ const One = ({ data }) => {
 						color: color,
 						fontSize: Math.min(
 							boxSize.width * 0.08,
-							boxSize.height * 0.16
+							boxSize.height * 0.16,
 						),
 						marginBottom: Math.min(
 							boxSize.width * 0.03,
-							boxSize.height * 0.06
+							boxSize.height * 0.06,
 						),
 						fontFamily,
 					},
@@ -225,7 +232,7 @@ const One = ({ data }) => {
 					{
 						gap: Math.min(
 							boxSize.width * 0.05,
-							boxSize.height * 0.1
+							boxSize.height * 0.1,
 						),
 					},
 				]}

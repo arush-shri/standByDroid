@@ -133,12 +133,14 @@ const styles = StyleSheet.create({
 		right: 0,
 		bottom: 0,
 		left: 0,
+		borderRadius: 15,
 	},
 	emptyContainer: {
 		flex: 1,
 		backgroundColor: "#1c91dfff",
 		justifyContent: "center",
 		alignItems: "center",
+		borderRadius: 15,
 	},
 	text: {
 		fontSize: 22,

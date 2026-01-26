@@ -65,7 +65,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 						batteryState === Battery.BatteryState.CHARGING ||
 						batteryState === Battery.BatteryState.FULL,
 				}));
-			}
+			},
 		);
 
 		wattageInterval = setInterval(async () => {
@@ -107,7 +107,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 				console.log("Save box error", e);
 			}
 		},
-		[storeKey]
+		[storeKey],
 	);
 
 	const handleTripleTap = () => {

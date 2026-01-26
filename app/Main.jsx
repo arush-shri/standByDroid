@@ -71,7 +71,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 				console.log("Save box error", e);
 			}
 		},
-		[setBox]
+		[setBox],
 	);
 
 	const saveBoxView = useCallback(
@@ -88,7 +88,7 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 				console.log("Save box error", e);
 			}
 		},
-		[setBox, box]
+		[setBox, box],
 	);
 
 	// PanResponder for dragging
@@ -99,11 +99,11 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 				...box,
 				x: Math.min(
 					SCREEN_WIDTH - box.w,
-					Math.max(0, box.x + gesture.dx)
+					Math.max(0, box.x + gesture.dx),
 				),
 				y: Math.min(
 					SCREEN_HEIGHT - box.h,
-					Math.max(0, box.y + gesture.dy)
+					Math.max(0, box.y + gesture.dy),
 				),
 			};
 			setBox(updated);
@@ -113,11 +113,11 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 				...box,
 				x: Math.min(
 					SCREEN_WIDTH - box.w,
-					Math.max(0, box.x + gesture.dx)
+					Math.max(0, box.x + gesture.dx),
 				),
 				y: Math.min(
 					SCREEN_HEIGHT - box.h,
-					Math.max(0, box.y + gesture.dy)
+					Math.max(0, box.y + gesture.dy),
 				),
 			};
 			saveBox(updated);
@@ -154,13 +154,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 				style={[
 					styles.box,
 					{
-						backgroundColor: box.color,
 						left: box.x,
 						top: box.y,
 						width: box.w,
 						height: box.h,
-						borderWidth: isEditing ? 2 : 0,
-						borderColor: isEditing ? "#fff" : "transparent",
 					},
 				]}
 			>
@@ -169,13 +166,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 						{...resizeResponder.panHandlers}
 						style={[
 							styles.resizeHandle,
-							{ bottom: 0, right: 0, borderTopLeftRadius: 8 },
+							{ bottom: -scale(14), right: -scale(14) },
 						]}
 					>
-						<MoveDiagonal2
-							size={scale(18)}
-							color={"rgba(0,0,0,0.5)"}
-						/>
+						<MoveDiagonal2 size={scale(18)} color={"#000"} />
 					</View>
 				)}
 				{isEditing && (
@@ -183,10 +177,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 						{...panResponder.panHandlers}
 						style={[
 							styles.resizeHandle,
-							{ bottom: 0, left: 0, borderTopRightRadius: 8 },
+							{ bottom: -scale(14), left: -scale(14) },
 						]}
 					>
-						<Move size={scale(18)} color={"rgba(0,0,0,0.5)"} />
+						<Move size={scale(18)} color={"#000"} />
 					</View>
 				)}
 				{isEditing && (
@@ -194,10 +188,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 						onPress={() => setIsEditing(false)}
 						style={[
 							styles.resizeHandle,
-							{ top: 0, right: 0, borderBottomLeftRadius: 8 },
+							{ top: -scale(14), right: -scale(14) },
 						]}
 					>
-						<Check size={scale(18)} color={"rgba(0,0,0,0.5)"} />
+						<Check size={scale(18)} color={"#0ed100"} />
 					</Pressable>
 				)}
 				{isEditing && (
@@ -208,10 +202,10 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 						}}
 						style={[
 							styles.resizeHandle,
-							{ top: 0, left: 0, borderBottomRightRadius: 8 },
+							{ top: -scale(14), left: -scale(14) },
 						]}
 					>
-						<Trash size={scale(18)} color={"rgba(0,0,0,0.5)"} />
+						<Trash size={scale(18)} color={"#ff0000"} />
 					</Pressable>
 				)}
 				<SelectorView
@@ -226,8 +220,8 @@ const RenderBox = ({ boxObj, storeKey, addBox, deleteBox }) => {
 			{isEditing && (
 				<Pressable onPress={addBox} style={styles.addMore}>
 					<Plus
-						size={scale(40)}
-						color={"#000"}
+						size={scale(35)}
+						color={"rgba(25, 167, 233, 1)"}
 						style={{ alignSelf: "center" }}
 					/>
 				</Pressable>
@@ -256,7 +250,7 @@ export default function Main() {
 						setDisableTouch(false);
 					}
 					lastVolume.current = volume;
-				}
+				},
 			);
 		}
 		init();
@@ -286,7 +280,7 @@ export default function Main() {
 				console.log("Save box error", e);
 			}
 		},
-		[setBoxes]
+		[setBoxes],
 	);
 
 	const addBoxAtCenter = () => {
@@ -320,7 +314,7 @@ export default function Main() {
 			deleteCache(storeKey);
 			setBoxes((prev) => prev.filter((box) => box.storeKey !== storeKey));
 		},
-		[setBoxes]
+		[setBoxes],
 	);
 
 	useEffect(() => {
@@ -351,8 +345,8 @@ export default function Main() {
 				{boxes.length === 0 && (
 					<Pressable onPress={addBoxAtCenter} style={styles.addMore}>
 						<Plus
-							size={scale(25)}
-							color={"rgba(0,0,0,0.5)"}
+							size={scale(35)}
+							color={"rgba(25, 167, 233, 1)"}
 							style={{ alignSelf: "center" }}
 						/>
 					</Pressable>
@@ -372,22 +366,25 @@ const styles = StyleSheet.create({
 		position: "absolute",
 	},
 	resizeHandle: {
-		width: 35,
-		height: 35,
+		width: 34,
+		height: 34,
 		backgroundColor: "rgba(255,255,255,0.8)",
 		position: "absolute",
 		justifyContent: "center",
 		alignItems: "center",
 		zIndex: 9999,
+		borderRadius: 1000,
 	},
 	addMore: {
-		backgroundColor: "rgba(25, 167, 233, 1)",
+		borderColor: "rgba(25, 167, 233, 1)",
 		marginLeft: 8,
-		width: 40,
-		height: 40,
+		width: 50,
+		height: 50,
 		justifyContent: "center",
 		alignSelf: "center",
 		top: "45%",
+		borderRadius: 10,
+		borderWidth: 2,
 	},
 	disableTouch: {
 		backgroundColor: "#FF9535",

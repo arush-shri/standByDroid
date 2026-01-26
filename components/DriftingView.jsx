@@ -29,7 +29,7 @@ const DriftingView = ({
 		const centerY = (boxSize.height - childSize.current.height) / 2;
 
 		position.setValue({ x: centerX, y: centerY });
-	}, [boxSize, position, childSize.current]);
+	}, [boxSize, childSize.current]);
 
 	// Random drift
 	useEffect(() => {
@@ -44,11 +44,11 @@ const DriftingView = ({
 		const id = setInterval(() => {
 			const maxX = Math.max(
 				0,
-				boxSize.width - childSize.current.width - padding
+				boxSize.width - childSize.current.width - padding,
 			);
 			const maxY = Math.max(
 				0,
-				boxSize.height - childSize.current.height - padding
+				boxSize.height - childSize.current.height - padding,
 			);
 
 			const offsetX = Math.random() * maxX;
@@ -90,7 +90,12 @@ const DriftingView = ({
 				]}
 				onLayout={(e) => {
 					const { width, height } = e.nativeEvent.layout;
+					if (width <= 3 || height <= 10) return;
 					childSize.current = { width, height };
+					setBoxSize((prev) => ({
+						width: prev.width - 0.00000001,
+						height: prev.height,
+					}));
 				}}
 			>
 				{children}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
-import SettingPanelItem from "../components/SettingPanelItem";
 import GeneralScreen from "./GeneralScreen";
 import PermissionsScreen from "./PermissionsScreen";
 
@@ -9,12 +8,12 @@ const Setting = () => {
 	const [view, setView] = useState("General");
 	return (
 		<View style={styles.container}>
-			<View style={styles.leftPanel}>
+			{/* <View style={styles.leftPanel}>
 				<SettingPanelItem label={"General"} onClick={setView} />
 				<SettingPanelItem label={"Permissions"} onClick={setView} />
 				<SettingPanelItem label={"Access"} onClick={setView} />
 				<SettingPanelItem label={"About"} onClick={setView} />
-			</View>
+			</View> */}
 			<View style={styles.rightPanel}>
 				<ViewSelect view={view} />
 			</View>
@@ -49,6 +48,7 @@ const styles = StyleSheet.create({
 	},
 	rightPanel: {
 		flex: 1,
+		paddingHorizontal: 20,
 	},
 });
 

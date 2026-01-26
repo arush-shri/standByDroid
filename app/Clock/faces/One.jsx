@@ -56,8 +56,8 @@ const One = memo(({ time }) => {
 					{
 						color: color,
 						fontSize: Math.min(
-							boxSize.width * 0.3,
-							boxSize.height * 0.8
+							boxSize.width * 0.25,
+							boxSize.height * 0.8,
 						),
 						fontFamily,
 					},
@@ -71,8 +71,8 @@ const One = memo(({ time }) => {
 					{
 						color: color,
 						fontSize: Math.min(
-							boxSize.width * 0.15,
-							boxSize.height * 0.4
+							boxSize.width * 0.12,
+							boxSize.height * 0.4,
 						),
 						fontFamily,
 					},
@@ -87,14 +87,11 @@ const One = memo(({ time }) => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		alignItems: "flex-end",
+		alignItems: "center",
 	},
-	hourMinute: {
-		fontSize: 90,
-	},
+	hourMinute: {},
 	ampm: {
-		fontSize: 25,
-		marginLeft: 8,
+		marginLeft: 10,
 	},
 });
 

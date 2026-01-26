@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import { X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
 	KeyboardAvoidingView,
@@ -44,11 +45,12 @@ const FontSelector = ({ visible, closeModal }) => {
 	const FontSelect = (name) => {
 		if (!screen) {
 			ToastMaker("Please select a screen");
+			setValue(null);
 			return;
 		}
 		setCache(`${screen}-font`, name);
-		closeModal();
 		EventsEmitter.emit(`${screen}-font`);
+		closeModal();
 	};
 
 	return (
@@ -66,6 +68,15 @@ const FontSelector = ({ visible, closeModal }) => {
 							flex: 1,
 						}}
 					>
+						<TouchableOpacity
+							onPress={closeModal}
+							style={styles.closeButton}
+						>
+							<X
+								size={scale(20)}
+								color={"rgba(255,255,255,0.8)"}
+							/>
+						</TouchableOpacity>
 						<ScrollView
 							contentContainerStyle={styles.container}
 							keyboardShouldPersistTaps="handled"
@@ -86,8 +97,8 @@ const FontSelector = ({ visible, closeModal }) => {
 										styles.buttons,
 										{
 											...(screen === "clock" && {
-												borderWidth: scale(2),
-												borderColor: "#11a0f8ff",
+												borderWidth: 0,
+												backgroundColor: "#2f80ed",
 											}),
 										},
 									]}
@@ -103,8 +114,8 @@ const FontSelector = ({ visible, closeModal }) => {
 										styles.buttons,
 										{
 											...(screen === "battery" && {
-												borderWidth: scale(2),
-												borderColor: "#11a0f8ff",
+												borderWidth: 0,
+												backgroundColor: "#2f80ed",
 											}),
 										},
 									]}
@@ -120,8 +131,8 @@ const FontSelector = ({ visible, closeModal }) => {
 										styles.buttons,
 										{
 											...(screen === "calendar" && {
-												borderWidth: scale(2),
-												borderColor: "#11a0f8ff",
+												borderWidth: 0,
+												backgroundColor: "#2f80ed",
 											}),
 										},
 									]}
@@ -137,8 +148,8 @@ const FontSelector = ({ visible, closeModal }) => {
 										styles.buttons,
 										{
 											...(screen === "music" && {
-												borderWidth: scale(2),
-												borderColor: "#11a0f8ff",
+												borderWidth: 0,
+												backgroundColor: "#2f80ed",
 											}),
 										},
 									]}
@@ -161,7 +172,7 @@ const FontSelector = ({ visible, closeModal }) => {
 							>
 								<TextInput
 									style={styles.input}
-									placeholder="Enter font name"
+									placeholder="Enter a name for your font"
 									value={details}
 									onChangeText={(text) => setDetails(text)}
 									placeholderTextColor="#9c9c9cff"
@@ -172,7 +183,7 @@ const FontSelector = ({ visible, closeModal }) => {
 									onPress={async () => {
 										if (!screen) {
 											ToastMaker(
-												"Please select a screen"
+												"Please select a screen",
 											);
 											return;
 										}
@@ -207,7 +218,7 @@ const FontSelector = ({ visible, closeModal }) => {
 											color: "#A8A8A8",
 											fontSize: scale(14),
 										}}
-										placeholder="Choose a font"
+										placeholder="Choose an existing font"
 										style={styles.dropdown}
 										dropDownContainerStyle={
 											styles.dropdownContainer
@@ -272,7 +283,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		borderWidth: 1,
-		borderColor: "#ccc",
+		borderColor: "#9ca3af",
 		borderRadius: scale(12),
 		padding: scale(10),
 		minHeight: scale(50),
@@ -283,19 +294,19 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	submitButton: {
-		backgroundColor: "#007BFF",
-		padding: scale(9),
+		backgroundColor: "#2f80ed",
 		borderRadius: scale(15),
 		marginTop: scale(16),
 		marginHorizontal: scale(13),
 		height: 50,
-		width: "15%",
+		width: "10%",
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	submitText: {
 		color: "#fff",
 		fontSize: scale(16),
 		textAlign: "center",
-		paddingTop: scale(2),
 	},
 	alertText: {
 		fontSize: scale(12),
@@ -304,23 +315,24 @@ const styles = StyleSheet.create({
 		marginTop: scale(4),
 	},
 	buttons: {
-		backgroundColor: "rgba(255,255,255,0.2)",
+		backgroundColor: "#1f2937",
 		flexDirection: "row",
-		padding: 10,
+		paddingHorizontal: 20,
+		paddingVertical: 7,
 		borderWidth: 1,
-		borderColor: "rgba(255,255,255,0.5)",
+		borderColor: "#9ca3af",
 		justifyContent: "center",
 		alignItems: "center",
-		borderRadius: 17,
+		borderRadius: 1000,
 	},
 	text: {
-		color: "rgba(255,255,255,0.8)",
+		color: "rgba(255,255,255,1)",
 		fontSize: 19,
 	},
 	dropdown: {
 		backgroundColor: "transparent",
 		borderWidth: 1,
-		borderColor: "#EBEBEB",
+		borderColor: "#9ca3af",
 		borderRadius: 10,
 		height: 50,
 		justifyContent: "center",
@@ -330,6 +342,17 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		borderWidth: 1,
 		borderColor: "#EBEBEB",
+	},
+	closeButton: {
+		padding: 8,
+		backgroundColor: "#1f2937",
+		borderRadius: 10000,
+		position: "absolute",
+		top: 10,
+		left: 10,
+		zIndex: 10,
+		borderWidth: 1,
+		borderColor: "#9ca3af",
 	},
 });
 

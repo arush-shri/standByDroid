@@ -1,6 +1,6 @@
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import DriftingView from "../../../components/DriftingView";
 import EventsEmitter from "../../context/EventsEmitter";
@@ -9,6 +9,7 @@ import { getCache } from "../../context/Storage";
 import { useUserPreferences } from "../../context/UserPreference";
 import {
 	GetCurrTrack,
+	MediaController,
 	PauseMedia,
 	PlayMedia,
 	SendCommand,
@@ -23,6 +24,7 @@ const One = ({}) => {
 	const reactSize = Math.min(boxSize.width * 0.5, boxSize.height);
 	const timeoutRef = useRef(null);
 	const [fontFamily, setFontFam] = useState(getCache("music-font"));
+	const getDataTimerRef = useRef(null);
 
 	useEffect(() => {
 		const changeFont = () => {
@@ -41,16 +43,27 @@ const One = ({}) => {
 	const getData = async () => {
 		if (timeoutRef) clearTimeout(timeoutRef.current);
 		const data = await GetCurrTrack();
+		if (data === "denied") {
+			await MediaController.openNotificationAccessSettings();
+		}
+
 		setTrack(data === "none" ? null : data);
 		if (data !== "none") {
 			timeoutRef.current = setTimeout(() => {
 				getData();
 			}, data.duration);
+			return true;
 		}
+		return false;
 	};
 
 	useEffect(() => {
-		getData();
+		if (!track) {
+			getDataTimerRef.current = setInterval(async () => {
+				const res = await getData();
+				if (res) clearInterval(getDataTimerRef.current);
+			}, 500);
+		}
 	}, []);
 
 	useEffect(() => {
@@ -91,11 +104,8 @@ const One = ({}) => {
 				setBoxSize({ width, height });
 			}}
 			styling={styles.container}
+			backgroundImage={track.artwork}
 		>
-			{track.artwork ? (
-				<Image source={{ uri: track.artwork }} style={styles.artwork} />
-			) : null}
-
 			<Text
 				style={{
 					fontFamily,

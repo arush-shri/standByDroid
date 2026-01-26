@@ -1,4 +1,4 @@
-import { X } from "lucide-react-native";
+import { BatteryMedium, Calendar, Clock, Music, X } from "lucide-react-native";
 import {
 	Modal,
 	Pressable,
@@ -38,6 +38,10 @@ const ViewPicker = ({ visible, closeModal, setValue }) => {
 							selecteView("view_1");
 						}}
 					>
+						<Clock
+							size={scale(20)}
+							color={"rgba(255,255,255,0.8)"}
+						/>
 						<Text style={styles.text}>Clock Display</Text>
 					</Pressable>
 
@@ -47,6 +51,10 @@ const ViewPicker = ({ visible, closeModal, setValue }) => {
 							selecteView("view_2");
 						}}
 					>
+						<BatteryMedium
+							size={scale(20)}
+							color={"rgba(255,255,255,0.8)"}
+						/>
 						<Text style={styles.text}>Battery Info</Text>
 					</Pressable>
 
@@ -56,6 +64,10 @@ const ViewPicker = ({ visible, closeModal, setValue }) => {
 							selecteView("view_3");
 						}}
 					>
+						<Calendar
+							size={scale(20)}
+							color={"rgba(255,255,255,0.8)"}
+						/>
 						<Text style={styles.text}>Calendar</Text>
 					</Pressable>
 
@@ -65,6 +77,10 @@ const ViewPicker = ({ visible, closeModal, setValue }) => {
 							selecteView("view_4");
 						}}
 					>
+						<Music
+							size={scale(20)}
+							color={"rgba(255,255,255,0.8)"}
+						/>
 						<Text style={styles.text}>Music Control</Text>
 					</Pressable>
 				</ScrollView>
@@ -82,27 +98,31 @@ const styles = StyleSheet.create({
 	},
 	closeButton: {
 		padding: 8,
-		backgroundColor: "rgba(255,255,255,0.3)",
+		backgroundColor: "#1f2937",
 		borderRadius: 10000,
 		position: "absolute",
 		top: 20,
 		right: 20,
 		zIndex: 10,
+		borderWidth: 1,
+		borderColor: "#9ca3af",
 	},
 	buttons: {
-		backgroundColor: "rgba(255,255,255,0.2)",
+		backgroundColor: "#1f2937",
 		width: "100%",
-		paddingVertical: 10,
-		borderWidth: 1.5,
-		borderColor: "rgba(255,255,255,0.5)",
+		paddingVertical: 17,
+		borderWidth: 1,
+		borderColor: "#9ca3af",
 		justifyContent: "center",
 		alignItems: "center",
-		borderRadius: 17,
+		borderRadius: 1000,
 		marginVertical: 6,
+		flexDirection: "row",
+		gap: 10,
 	},
 	text: {
 		color: "rgba(255,255,255,0.8)",
-		fontSize: 19,
+		fontSize: 22,
 	},
 	scrollContainer: {
 		justifyContent: "center",

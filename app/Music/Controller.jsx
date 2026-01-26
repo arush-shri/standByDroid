@@ -1,11 +1,9 @@
 import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
-import { FlatList, NativeModules, Pressable, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import { StyleSheet } from "react-native-size-scaling";
 import { ToastMaker } from "../../components/ToastMaker";
 import { getCache, setCache } from "../context/Storage";
 import One from "./faces/One";
-
-const { MediaControllerModule } = NativeModules;
 
 const FacesMap = {
 	one: One,
@@ -34,13 +32,14 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 				console.log("Save box error", e);
 			}
 		},
-		[storeKey]
+		[storeKey],
 	);
 
 	const handleTripleTap = () => {
 		setSelector(true);
 		ToastMaker("Scroll down and tap on any skin you like", "long");
 	};
+
 	useImperativeHandle(ref, () => ({
 		handleTripleTap,
 	}));

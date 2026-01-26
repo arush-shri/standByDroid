@@ -34,7 +34,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 
 	const loadEvents = async () => {
 		const calendars = await CalendarAPI.getCalendarsAsync(
-			CalendarAPI.EntityTypes.EVENT
+			CalendarAPI.EntityTypes.EVENT,
 		);
 		const now = new Date();
 		const future = new Date(now);
@@ -43,7 +43,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 		const allEvents = await CalendarAPI.getEventsAsync(
 			calendars.map((c) => c.id),
 			new Date(now.getFullYear(), now.getMonth(), 1),
-			future
+			future,
 		);
 
 		const grouped = {};
@@ -75,7 +75,7 @@ export const Controller = forwardRef(({ storeKey, viewface }, ref) => {
 				console.log("Save box error", e);
 			}
 		},
-		[storeKey]
+		[storeKey],
 	);
 
 	const handleTripleTap = () => {
