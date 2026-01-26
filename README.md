@@ -1,4 +1,4 @@
-# Project Name
+# StandByDroid
 
 iOS-style dock for Android built with React Native.
 
@@ -10,8 +10,8 @@ iOS-style dock for Android built with React Native.
 - Skin system
 
 ## Installation
-npm install
-npx react-native run-android
+- npm install
+- npx react-native run-android
 
 ## Contributing
 You can add new skins by creating a new file in the faces folder and registering it in FacesMap.
